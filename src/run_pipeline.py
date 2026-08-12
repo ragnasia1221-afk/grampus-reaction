@@ -115,7 +115,9 @@ def run() -> int:
         )
 
     # --- 5. Claude API: まとめ・引用選定 (必須) ----------------------------------
-    gen_article, verification = generate_article.generate_article(match_dict, reactions_dict, nichan_dict)
+    gen_article, verification = generate_article.generate_article(
+        match_dict, reactions_dict, nichan_dict, focus_club=generate_article.FOCUS_CLUB
+    )
     generated_dict = {
         "summary_paragraphs": gen_article.summary_paragraphs,
         "board_picks": [p.model_dump() for p in verification.ok_board_picks],
@@ -133,7 +135,9 @@ def run() -> int:
         log(f"[検証警告] {w}")
 
     # --- 6. HTML描画 -------------------------------------------------------------
-    context = render_html.build_context(match_dict, reactions_dict, generated_dict, nichan_dict)
+    context = render_html.build_context(
+        match_dict, reactions_dict, generated_dict, nichan_dict, focus_club=generate_article.FOCUS_CLUB
+    )
     render_html.render_from_context(context, output_path)
     log(f"HTML生成OK: {output_path}")
 

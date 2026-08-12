@@ -95,11 +95,34 @@ def _blog_source_name(url: str) -> str:
     return url.split("/")[2] if "://" in url else url
 
 
-def build_context(match: dict, reactions: dict, article: dict, nichan: dict | None = None) -> dict:
+def build_context(
+    match: dict,
+    reactions: dict,
+    article: dict,
+    nichan: dict | None = None,
+    focus_club: str | None = None,
+) -> dict:
     home_short = _team_short(match["home_team"])
     away_short = _team_short(match["away_team"])
     home_badge_letter = match["home_team"][0]
     away_badge_letter = match["away_team"][0]
+
+    # focus_club(このサイトが応援するクラブ)がこの試合のどちら側かによって、
+    # セクション見出しの言い回しを「ファン視点」/「中立視点」で出し分ける。
+    if focus_club == match["home_team"]:
+        fan_side = "home"
+    elif focus_club == match["away_team"]:
+        fan_side = "away"
+    else:
+        fan_side = None
+
+    def _section_title(team_short: str, side: str) -> str:
+        if fan_side is None or fan_side == side:
+            return f"掲示板の反応：{team_short}サポーター"
+        return f"掲示板の反応：{team_short}サポーター（対比として）"
+
+    home_section_title = _section_title(home_short, "home")
+    away_section_title = _section_title(away_short, "away")
 
     comments_by_id = {c["comment_id"]: c for c in reactions.get("comments", [])}
     tweets_by_url = {t["url"]: t for t in reactions.get("tweets", [])}
@@ -186,6 +209,8 @@ def build_context(match: dict, reactions: dict, article: dict, nichan: dict | No
         "summary_paragraphs": article.get("summary_paragraphs", []),
         "home_comments": home_comments,
         "away_comments": away_comments,
+        "home_section_title": home_section_title,
+        "away_section_title": away_section_title,
         "tweets": tweets,
         "nichan_picks": nichan_picks,
         "nichan_thread_title": nichan_thread_title,
@@ -214,6 +239,7 @@ def render(
     article_path: Path,
     output_path: Path,
     nichan_path: Path | None = None,
+    focus_club: str | None = None,
 ) -> None:
     match = json.loads(match_path.read_text(encoding="utf-8"))
     reactions = json.loads(reactions_path.read_text(encoding="utf-8"))
@@ -224,16 +250,19 @@ def render(
         else None
     )
 
-    context = build_context(match, reactions, article, nichan)
+    context = build_context(match, reactions, article, nichan, focus_club)
     render_from_context(context, output_path)
 
 
 if __name__ == "__main__":
+    import generate_article as _generate_article
+
     render(
         match_path=DATA_DIR / "match_result.json",
         reactions_path=DATA_DIR / "blog_reactions.json",
         article_path=DATA_DIR / "generated_article.json",
         output_path=OUTPUT_DIR / "nagoya_shimizu_reaction.html",
         nichan_path=DATA_DIR / "nichan_reactions.json",
+        focus_club=_generate_article.FOCUS_CLUB,
     )
     print(f"[saved] {OUTPUT_DIR / 'nagoya_shimizu_reaction.html'}")

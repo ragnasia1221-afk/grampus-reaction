@@ -74,9 +74,14 @@ class GeneratedArticle(BaseModel):
 # プロンプト構築
 # ---------------------------------------------------------------------------
 
-SYSTEM_PROMPT = """\
+# このサイトが「ファン視点」でまとめるクラブ。home_team/away_teamのどちらかがこれと一致する試合は
+# そのクラブのサポーター寄りの選定になり、一致しない試合(=このクラブが関与しない試合)は
+# 中立視点でまとめる。Noneにすると常にすべての試合を中立視点で扱う。
+FOCUS_CLUB: str | None = "名古屋グランパス"
+
+_BASE_SYSTEM_PROMPT = """\
 あなたはJリーグの試合反応まとめブログの編集者です。
-名古屋グランパスのサポーター向けに、試合結果とファンの反応をまとめた記事を作成します。
+試合結果とファンの反応をまとめた記事を作成します。
 
 # 著作権ルール(厳守)
 - 掲示板コメント・Xポスト・5ch投稿の原文を長く引用してはいけません。
@@ -85,11 +90,9 @@ SYSTEM_PROMPT = """\
 - quote 以外の部分(paraphrase および記事本文の summary_paragraphs)では、
   原文の言葉をそのまま使わず、必ず自分の言葉で要約・言い換えてください。
 - summary_paragraphs には原文からの直接引用を一切含めないでください(完全な言い換えのみ)。
+"""
 
-# 選定方針
-- board_picks: 名古屋(home)サポーターの反応を中心に、称賛・批判・分析など多様な視点が伝わるように選ぶ。
-  清水(away)サポーターの反応も対比として少数、他クラブ(other)視点があれば1件程度含めてよい。
-  同じような内容の重複は避け、それぞれ違う論点のコメントを選ぶこと。
+_COMMON_SELECTION_POLICY = """\
 - tweet_picks: 試合後の反応として代表的なものを選ぶ。
 - nichan_picks: 5chの実況スレッドはノイズ(相槌・単発の煽り・脱線)が多いので、
   戦術面の具体的な指摘や、得点・退場など試合の展開に直接反応している、内容のある投稿だけを選ぶこと。
@@ -97,6 +100,44 @@ SYSTEM_PROMPT = """\
 - comment_id / tweet_url / post_number は必ず渡されたデータのものと完全に一致させること。存在しないIDを作らないこと。
 - 各ソースから選ぶ件数の目安: board_picks 8〜10件、tweet_picks 4〜6件、nichan_picks 5〜8件。
 """
+
+
+def _fan_side(focus_club: str | None, home_team: str, away_team: str) -> str | None:
+    """focus_clubがこの試合のhome/awayどちらかを返す。関与していなければNone(=中立視点)。"""
+    if focus_club == home_team:
+        return "home"
+    if focus_club == away_team:
+        return "away"
+    return None
+
+
+def _build_system_prompt(focus_club: str | None, home_team: str, away_team: str) -> str:
+    side = _fan_side(focus_club, home_team, away_team)
+
+    if side == "home":
+        fan_team, other_team = home_team, away_team
+    elif side == "away":
+        fan_team, other_team = away_team, home_team
+    else:
+        fan_team = other_team = None
+
+    if fan_team:
+        policy = f"""\
+# 選定方針(ファン視点: {fan_team})
+- このサイトは{fan_team}のサポーター向けです。board_picks は{fan_team}サポーターの反応を中心に、
+  称賛・批判・分析など多様な視点が伝わるように選ぶこと。
+  {other_team}サポーターの反応も対比として少数、他クラブ(other)視点があれば1件程度含めてよい。
+  同じような内容の重複は避け、それぞれ違う論点のコメントを選ぶこと。
+"""
+    else:
+        policy = """\
+# 選定方針(中立視点)
+- このサイトは特定クラブに肩入れしません。board_picks は両チームのサポーターの反応を
+  概ね均等な件数でバランス良く選び、称賛・批判・分析など多様な視点が伝わるようにすること。
+  一方のチームの反応に偏らないよう注意すること。他クラブ(other)視点があれば1件程度含めてよい。
+"""
+
+    return _BASE_SYSTEM_PROMPT + "\n" + policy + _COMMON_SELECTION_POLICY
 
 
 def _build_user_content(match: dict, reactions: dict, nichan: dict | None) -> str:
@@ -288,7 +329,10 @@ def verify_quotes(
 # ---------------------------------------------------------------------------
 
 def generate_article(
-    match: dict, reactions: dict, nichan: dict | None = None
+    match: dict,
+    reactions: dict,
+    nichan: dict | None = None,
+    focus_club: str | None = FOCUS_CLUB,
 ) -> tuple[GeneratedArticle, VerificationResult]:
     if not os.environ.get("ANTHROPIC_API_KEY"):
         raise RuntimeError(
@@ -299,6 +343,7 @@ def generate_article(
     client = anthropic.Anthropic()
 
     user_content = _build_user_content(match, reactions, nichan)
+    system_prompt = _build_system_prompt(focus_club, match["home_team"], match["away_team"])
 
     response = client.messages.parse(
         model=MODEL_ID,
@@ -308,7 +353,7 @@ def generate_article(
         # (Sonnet 5はthinking未指定だとデフォルトでadaptive thinkingが動き、
         #  その分の出力がmax_tokensを圧迫して本文JSONが途中で切れる事故があったため)。
         thinking={"type": "disabled"},
-        system=SYSTEM_PROMPT,
+        system=system_prompt,
         messages=[{"role": "user", "content": user_content}],
         output_format=GeneratedArticle,
     )

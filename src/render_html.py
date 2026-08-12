@@ -1,0 +1,239 @@
+"""
+ステップ1〜3で生成した
+  data/match_result.json      (試合結果: jleague_scraper.py)
+  data/blog_reactions.json    (掲示板コメント・引用ツイート: domesoccer_scraper.py)
+  data/generated_article.json (まとめ文・引用選定: generate_article.py)
+をもとに、テンプレート templates/nagoya_shimizu_reaction.html.j2 (Jinja2) を描画して
+最終的なHTMLページを output/ に書き出す。
+"""
+
+from __future__ import annotations
+
+import json
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR / "data"
+TEMPLATE_DIR = BASE_DIR / "templates"
+OUTPUT_DIR = BASE_DIR / "output"
+
+JST = timezone(timedelta(hours=9))
+WEEKDAY_JA = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
+
+# 主要クラブの短縮呼称(バッジ下のラベルに使う)。ここに無いクラブは
+# チーム名の先頭2文字を自動で使う(汎用フォールバック)。
+TEAM_SHORT_NAMES: dict[str, str] = {
+    "名古屋グランパス": "名古屋",
+    "清水エスパルス": "清水",
+    "鹿島アントラーズ": "鹿島",
+    "浦和レッズ": "浦和",
+    "柏レイソル": "柏",
+    "FC東京": "FC東京",
+    "東京ヴェルディ": "東京V",
+    "川崎フロンターレ": "川崎",
+    "横浜F・マリノス": "横浜FM",
+    "横浜FC": "横浜FC",
+    "湘南ベルマーレ": "湘南",
+    "アルビレックス新潟": "新潟",
+    "京都サンガF.C.": "京都",
+    "ガンバ大阪": "G大阪",
+    "セレッソ大阪": "C大阪",
+    "ヴィッセル神戸": "神戸",
+    "ファジアーノ岡山": "岡山",
+    "サンフレッチェ広島": "広島",
+    "アビスパ福岡": "福岡",
+    "町田ゼルビア": "町田",
+    "サガン鳥栖": "鳥栖",
+}
+
+
+def _team_short(team_name: str) -> str:
+    return TEAM_SHORT_NAMES.get(team_name, team_name[:2])
+
+
+def _format_kickoff(kickoff_iso: str | None) -> str:
+    if not kickoff_iso:
+        return ""
+    dt_utc = datetime.fromisoformat(kickoff_iso.replace("Z", "+00:00"))
+    dt_jst = dt_utc.astimezone(JST)
+    weekday = WEEKDAY_JA[dt_jst.weekday()]
+    return f"{dt_jst:%Y.%m.%d} ({weekday}) {dt_jst:%H:%M}"
+
+
+def _build_score_goal_line(match: dict) -> str:
+    home_char = match["home_team"][0]
+    away_char = match["away_team"][0]
+    team_char = {match["home_team"]: home_char, match["away_team"]: away_char}
+
+    goal_parts = [
+        f"{g['player']}（{team_char.get(g['team'], g['team'][0])}）{g['minute']}"
+        for g in match.get("goals", [])
+    ]
+    goals_text = "、".join(goal_parts) if goal_parts else "なし"
+
+    # カードは同じチームの選手名をまとめて1グループにする
+    by_team: dict[str, list[str]] = {}
+    for c in match.get("cards", []):
+        by_team.setdefault(c["team"], []).append(c["player"])
+    # 同一選手の重複(同じ試合内で複数枚)は名前としては1回にまとめる
+    card_groups = []
+    for team, players in by_team.items():
+        seen = list(dict.fromkeys(players))  # 順序を保った重複除去
+        char = team_char.get(team, team[0])
+        card_groups.append(f"{'、'.join(seen)}（{char}）")
+    cards_text = "　".join(card_groups) if card_groups else "なし"
+
+    return f"得点：{goals_text}　／　警告・退場：{cards_text}"
+
+
+def _blog_source_name(url: str) -> str:
+    if "domesoccer" in url:
+        return "ドメサカブログ"
+    return url.split("/")[2] if "://" in url else url
+
+
+def build_context(match: dict, reactions: dict, article: dict, nichan: dict | None = None) -> dict:
+    home_short = _team_short(match["home_team"])
+    away_short = _team_short(match["away_team"])
+    home_badge_letter = match["home_team"][0]
+    away_badge_letter = match["away_team"][0]
+
+    comments_by_id = {c["comment_id"]: c for c in reactions.get("comments", [])}
+    tweets_by_url = {t["url"]: t for t in reactions.get("tweets", [])}
+
+    home_comments = []
+    away_comments = []
+    for pick in article.get("board_picks", []):
+        source = comments_by_id.get(pick["comment_id"])
+        if source is None:
+            continue  # 元データに無いものは(検証済みのはずだが)念のためスキップ
+
+        if pick["affiliation"] == "home":
+            entry = {
+                **pick,
+                "number": source.get("number"),
+                "badge_class": "nagoya",
+                "badge_letter": home_badge_letter,
+                "tag_label": home_short,
+            }
+            home_comments.append(entry)
+        elif pick["affiliation"] == "away":
+            entry = {
+                **pick,
+                "number": source.get("number"),
+                "badge_class": "shimizu",
+                "badge_letter": away_badge_letter,
+                "tag_label": away_short,
+            }
+            away_comments.append(entry)
+        else:  # other
+            raw_tag = (source.get("team_tag") or "他").strip()
+            entry = {
+                **pick,
+                "number": source.get("number"),
+                "badge_class": "other",
+                "badge_letter": raw_tag[0] if raw_tag else "他",
+                "tag_label": "他クラブ",
+            }
+            home_comments.append(entry)  # テンプレート原案どおり、他クラブ視点は名古屋側セクションに混ぜる
+
+    tweets = []
+    for pick in article.get("tweet_picks", []):
+        source = tweets_by_url.get(pick["tweet_url"])
+        if source is None:
+            continue
+        author_name = source.get("author_name") or source.get("handle") or "?"
+        tweets.append(
+            {
+                **pick,
+                "author_name": author_name,
+                "handle": source.get("handle", ""),
+                "avatar_letter": author_name[0] if author_name else "?",
+            }
+        )
+
+    nichan_posts_by_number = {p["number"]: p for p in (nichan or {}).get("posts", [])}
+    nichan_picks = []
+    for pick in article.get("nichan_picks", []):
+        source = nichan_posts_by_number.get(pick["post_number"])
+        if source is None:
+            continue
+        nichan_picks.append({**pick, "posted_at": source.get("posted_at", "")})
+
+    headline = f"{match['home_team']} {match['home_score']}-{match['away_score']} {match['away_team']}<br>掲示板・Xの反応まとめ"
+
+    blog_url = reactions.get("url", "")
+    nichan_thread_title = (nichan or {}).get("title", "")
+
+    return {
+        "home_team": match["home_team"],
+        "away_team": match["away_team"],
+        "home_score": match["home_score"],
+        "away_score": match["away_score"],
+        "home_short": home_short,
+        "away_short": away_short,
+        "home_badge_letter": home_badge_letter,
+        "away_badge_letter": away_badge_letter,
+        "kickoff_display": _format_kickoff(match.get("kickoff_iso")),
+        "section": match.get("section", ""),
+        "stadium": match.get("stadium", ""),
+        "attendance": match.get("attendance"),
+        "score_goal_line": _build_score_goal_line(match),
+        "headline": headline,
+        "summary_paragraphs": article.get("summary_paragraphs", []),
+        "home_comments": home_comments,
+        "away_comments": away_comments,
+        "tweets": tweets,
+        "nichan_picks": nichan_picks,
+        "nichan_thread_title": nichan_thread_title,
+        "blog_source_name": _blog_source_name(blog_url),
+    }
+
+
+def render_from_context(context: dict, output_path: Path) -> str:
+    """既に組み立て済みのcontext(dict)をテンプレートに描画してファイルに書き出す。
+    (run_pipeline.py のように、ファイル経由ではなくメモリ上のデータをそのまま渡したい場合用)"""
+    env = Environment(
+        loader=FileSystemLoader(str(TEMPLATE_DIR)),
+        autoescape=select_autoescape(["html", "j2"]),
+    )
+    template = env.get_template("nagoya_shimizu_reaction.html.j2")
+    html = template.render(**context)
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(html, encoding="utf-8")
+    return html
+
+
+def render(
+    match_path: Path,
+    reactions_path: Path,
+    article_path: Path,
+    output_path: Path,
+    nichan_path: Path | None = None,
+) -> None:
+    match = json.loads(match_path.read_text(encoding="utf-8"))
+    reactions = json.loads(reactions_path.read_text(encoding="utf-8"))
+    article = json.loads(article_path.read_text(encoding="utf-8"))
+    nichan = (
+        json.loads(nichan_path.read_text(encoding="utf-8"))
+        if nichan_path and nichan_path.exists()
+        else None
+    )
+
+    context = build_context(match, reactions, article, nichan)
+    render_from_context(context, output_path)
+
+
+if __name__ == "__main__":
+    render(
+        match_path=DATA_DIR / "match_result.json",
+        reactions_path=DATA_DIR / "blog_reactions.json",
+        article_path=DATA_DIR / "generated_article.json",
+        output_path=OUTPUT_DIR / "nagoya_shimizu_reaction.html",
+        nichan_path=DATA_DIR / "nichan_reactions.json",
+    )
+    print(f"[saved] {OUTPUT_DIR / 'nagoya_shimizu_reaction.html'}")

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【反応まとめ】名古屋グランパス 0-1 清水エスパルス</title>
+<style>
+  :root{
+    --paper:#f6f2ea;
+    --paper-2:#efe9dc;
+    --ink:#241f19;
+    --ink-soft:#6b6153;
+    --nagoya:#8c1d20;
+    --nagoya-deep:#5c1214;
+    --nagoya-gold:#c8a24a;
+    --shimizu:#e8781f;
+    --shimizu-deep:#b95612;
+    --line:#ddd3bf;
+    --other:#4a5a63;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Meiryo UI","Meiryo","メイリオ","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px;}
+
+  /* header / scoreboard */
+  .masthead{
+    padding:38px 20px 0;
+    text-align:center;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.24em;
+    color:var(--ink-soft);
+    font-weight:700;
+  }
+  .wrap > .masthead h1{
+    font-size:26px;
+    font-weight:700;
+    margin:10px 0 26px;
+    line-height:1.6;
+  }
+
+  .scoreboard{
+    background:linear-gradient(180deg,#2a2019,#1b140f);
+    border-radius:6px;
+    padding:26px 18px 22px;
+    color:#f3ead9;
+    box-shadow:0 10px 30px -14px rgba(0,0,0,.5);
+  }
+  .score-meta{
+    font-size:11px;
+    letter-spacing:.14em;
+    color:#c9bda3;
+    margin-bottom:16px;
+  }
+  .score-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+  }
+  .club{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    width:120px;
+  }
+  .badge{
+    width:52px;height:52px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;font-weight:700;color:#fff;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.25);
+    flex-shrink:0;
+  }
+  .badge.nagoya{background:radial-gradient(circle at 32% 28%,#a6272a,var(--nagoya-deep));}
+  .badge.shimizu{background:radial-gradient(circle at 32% 28%,#f3934a,var(--shimizu-deep));}
+  .badge.mini{width:30px;height:30px;font-size:13px;}
+  .club-name{font-size:13px;font-weight:700;letter-spacing:.04em;}
+  .score-num{
+    font-size:44px;font-weight:700;
+    display:flex;align-items:center;gap:14px;
+  }
+  .score-dash{color:#8f8471;font-size:28px;}
+  .score-goal{font-size:11px;color:#c9bda3;margin-top:2px;}
+
+  /* summary card */
+  .summary{
+    margin-top:26px;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:24px 22px;
+    font-size:15px;
+  }
+  .summary h2{
+    font-size:15px;
+    margin:0 0 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .summary h2::before{
+    content:"";
+    width:14px;height:14px;
+    background:var(--nagoya);
+    display:inline-block;
+    transform:rotate(45deg);
+  }
+  .summary p{margin:0 0 10px;color:#3b352c;}
+  .summary p:last-child{margin-bottom:0;}
+  .summary .cite{font-size:12px;color:var(--ink-soft);margin-top:14px;}
+
+  /* section headers */
+  .section{margin-top:48px;}
+  .section-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .section-head .rule{flex:1;height:1px;background:var(--line);}
+  .section-title{
+    font-size:19px;
+    font-weight:700;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-sub{font-size:12px;color:var(--ink-soft);margin:-10px 0 20px;}
+
+  /* comment cards */
+  .comment{
+    display:flex;
+    gap:12px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .comment:last-child{border-bottom:none;}
+  .comment .who{
+    flex-shrink:0;
+    width:64px;
+    text-align:center;
+  }
+  .comment .who .tag{
+    display:block;
+    font-size:10px;
+    color:var(--ink-soft);
+    margin-top:4px;
+    letter-spacing:.02em;
+  }
+  .comment .body{flex:1;min-width:0;}
+  .comment .meta{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .comment .paraphrase{
+    font-size:14.5px;
+    color:#3b352c;
+    margin-bottom:6px;
+  }
+  .comment .quote{
+    font-size:15.5px;
+    color:var(--ink);
+  }
+  .comment .quote span.line{
+    display:inline;
+  }
+  .comment .quote span.line::before{content:"「";color:var(--ink-soft);}
+  .comment .quote span.line::after{content:"」";color:var(--ink-soft);}
+
+  .badge.other{background:linear-gradient(135deg,#6b7c86,var(--other));}
+  .badge.nichan{background:linear-gradient(135deg,#6b5b8c,#3f3357);}
+
+  /* X post cards */
+  .xpost{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    display:flex;
+    gap:12px;
+  }
+  .xpost .avatar{
+    width:36px;height:36px;border-radius:50%;
+    background:linear-gradient(135deg,#f3934a,var(--shimizu-deep));
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:13px;font-weight:700;
+  }
+  .xpost .handle{font-size:13px;font-weight:700;}
+  .xpost .at{font-size:12px;color:var(--ink-soft);font-weight:400;margin-left:4px;}
+  .xpost .paraphrase{font-size:13.5px;color:#3b352c;margin-top:4px;}
+  .xpost .quote{font-size:14.5px;margin-top:4px;}
+
+  .footnote{
+    margin-top:20px;
+    background:var(--paper-2);
+    border-left:3px solid var(--nagoya-gold);
+    padding:14px 16px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    border-radius:0 4px 4px 0;
+  }
+
+  .source-note{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:60px;
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:480px){
+    .score-num{font-size:34px;}
+    .club{width:92px;}
+    .badge{width:44px;height:44px;font-size:18px;}
+    .comment{gap:9px;}
+    .comment .who{width:52px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div class="eyebrow">MATCH REACTION FILE</div>
+    <h1>名古屋グランパス 0-1 清水エスパルス<br>掲示板・Xの反応まとめ</h1>
+  </div>
+
+  <div class="scoreboard">
+    <div class="score-meta">2026.08.08 (SAT) 19:00 KICK OFF ／ 第1節 ／ 豊田スタジアム ／ 観衆 40,494人</div>
+    <div class="score-row">
+      <div class="club">
+        <div class="badge nagoya">名</div>
+        <div class="club-name">名古屋グランパス</div>
+      </div>
+      <div class="score-num">0<span class="score-dash">−</span>1</div>
+      <div class="club">
+        <div class="badge shimizu">清</div>
+        <div class="club-name">清水エスパルス</div>
+      </div>
+    </div>
+    <div class="score-goal">得点：北川 航也（清）38&#39;　／　警告・退場：オ セフン、パク スンウク（清）</div>
+  </div>
+
+  <div class="summary">
+    <h2>まとめ</h2>
+    
+    <p>開幕戦、豊田スタジアムで名古屋グランパスは清水エスパルスと対戦し0-1で敗れた。前半38分に北川航也へ決められると、そのまま数的優位を得ながらも最後までゴールをこじ開けられなかった。</p>
+    
+    <p>試合を大きく動かしたのは61分、オ・セフンの一発退場だった。ファウル後の挑発的な仕草が問題視され、警告2枚での退場となったが、数的優位に立った名古屋は思うように攻めきれず、逆に清水は10人ながら集中を切らさずに守り抜いた。</p>
+    
+    <p>名古屋サポーターの間では、失点の起点となったGKの判断や、ボランチ起用された選手のミスパスへの不満、そして層の薄さを露呈したベンチメンバーへの厳しい声が相次いだ。一方で新加入のブラジル人選手のコンディション不足を指摘する声や、単調なパス回しに終始した攻撃を疑問視する意見も目立った。</p>
+    
+    <p>対照的に清水サポーターは、退場者を出しながらも勝ち切ったチームの粘り強さを称賛し、新戦力の活躍を喜ぶ投稿が多く見られた。特に新加入の右サイドの選手や、レンタルで加入したFWへの評価が高く、開幕戦で結果を出したことに大きな手応えを感じている様子がうかがえた。</p>
+    
+    <p>中立的な立場のファンからは、名古屋の補強不足を疑問視する声や、両者の新戦力の活躍ぶりに注目するコメントが寄せられ、今後のシーズン展開を占う上で興味深い一戦になったとの見方も示された。</p>
+    
+    <div class="cite">出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿 ／ 5ch実況スレッド</div>
+  </div>
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="badge mini nagoya">名</span>掲示板の反応：名古屋サポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nagoya">名</div><span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント2</div>
+        
+        <div class="quote"><span class="line">全てはピサノの足元の過信が招いた失点</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nagoya">名</div><span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント3</div>
+        
+        <div class="quote"><span class="line">最後の方に惜しい場面2、3回作って結局負ける</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nagoya">名</div><span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント6</div>
+        
+        <div class="quote"><span class="line">新陳代謝ゼロはあかんなあ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nagoya">名</div><span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント13</div>
+        
+        <div class="quote"><span class="line">ホームで1点も取れないのはどうなの？</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nagoya">名</div><span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント21</div>
+        
+        <div class="quote"><span class="line">ワーストの出来とかミシャは何がしたかったのやら</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nagoya">名</div><span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント26</div>
+        
+        <div class="quote"><span class="line">どこ出すか見え見えの横パスとかする意味ない</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nagoya">名</div><span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント29</div>
+        
+        <div class="quote"><span class="line">シャドーで位置にいるから目が揃わなかったり</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini other">鞠</div><span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント41</div>
+        
+        <div class="quote"><span class="line">目立った補強なしってのは不自然だし</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="badge mini shimizu">清</span>掲示板の反応：清水サポーター（対比として）</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini shimizu">清</div><span class="tag">清水</span></div>
+      <div class="body">
+        <div class="meta">コメント5</div>
+        
+        <div class="quote"><span class="line">相手を塩漬けにできたのは大進歩</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini shimizu">清</div><span class="tag">清水</span></div>
+      <div class="body">
+        <div class="meta">コメント9</div>
+        
+        <div class="quote"><span class="line">体の寄せが早くてボール奪える</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="badge mini nichan">実</span>5ch実況スレッドの反応</div>
+      <div class="rule"></div>
+    </div>
+    <div class="section-sub">スレッド:「実況板にも集え！名古屋グランパスファン」より</div>
+
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#631</div>
+        
+        <div class="quote"><span class="line">左CB誰もいないのわかりきってたのに野上だもんなぁ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#902</div>
+        
+        <div class="quote"><span class="line">甲田の消極性と判断のクソさには、がっかりだわ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#918</div>
+        
+        <div class="quote"><span class="line">対策されまくりのミシャサッカーだったな</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#927</div>
+        
+        <div class="quote"><span class="line">なぜ左CBを補強しなかったのか一晩中問い詰めたい</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#907</div>
+        
+        <div class="quote"><span class="line">10人で負けたチーム鯱だけだぞ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#628</div>
+        
+        <div class="quote"><span class="line">相手退場したのにホームで無得点</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#328</div>
+        
+        <div class="quote"><span class="line">百年構想の終盤から変わってない</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#13</div>
+        
+        <div class="quote"><span class="line">最多得点、最多失点でDF補強しないってなんでや</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">試合後：Xの反応</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="xpost">
+      <div class="avatar">t</div>
+      <div class="body">
+        <div><span class="handle">tatsuya</span><span class="at">@tatsu002120</span></div>
+        <div class="paraphrase">退場後は防戦一方の苦しい試合展開だったが、守備陣が集中を保って耐え抜き、GKの好セーブにも助けられて勝利したことを喜んでいる。</div>
+        <div class="quote"><span class="line">終盤危ないのがあったが、透吾ビッグセーブありがとう</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">橙</div>
+      <div class="body">
+        <div><span class="handle">橙/箱推し</span><span class="at">@gypcysunday</span></div>
+        <div class="paraphrase">以前のチームなら追いつかれていたはずの試合をしっかり勝ち切れたとして、新戦力の活躍と得点者、GKの安定感を高く評価している。</div>
+        <div class="quote"><span class="line">新戦力がかなり効果的だったよね</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">る</div>
+      <div class="body">
+        <div><span class="handle">るか</span><span class="at">@kwa322527</span></div>
+        <div class="paraphrase">新加入の選手たちの活躍によって新たなファンが増えたはずだとし、それぞれの持ち味が発揮された試合だったと振り返っている。</div>
+        <div class="quote"><span class="line">須貝とディエギーニョに心掴まれたエスパサポは今日で爆増したはず</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">k</div>
+      <div class="body">
+        <div><span class="handle">k-taro</span><span class="at">@kei0925jpn</span></div>
+        <div class="paraphrase">終盤まで交代カードを温存した監督采配を高く評価する声。</div>
+        <div class="quote"><span class="line">ATまで交代枠を我慢して残した吉田監督の采配も見事</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">タ</div>
+      <div class="body">
+        <div><span class="handle">タイキーニョス</span><span class="at">@hamuhamu1037</span></div>
+        <div class="paraphrase">長年勝てなかった相手についに勝利したことへの強い喜びを表現している。</div>
+        <div class="quote"><span class="line">名古屋にやっと勝てた！！</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">お</div>
+      <div class="body">
+        <div><span class="handle">おかぴ</span><span class="at">@rainbow_birds_</span></div>
+        <div class="paraphrase">退場者を出した苦しい状況ながらも現地に来て良かったと振り返り、次節への期待を寄せている。</div>
+        <div class="quote"><span class="line">オセフン不在は痛いが、ホーム開幕戦もよろしく頼みます</span></div>
+      </div>
+    </div>
+    
+  </div>
+  
+
+  <div class="source-note">
+    出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿 ／ 5ch実況スレッド「実況板にも集え！名古屋グランパスファン」<br>
+    試合結果出典：Ｊリーグ公式サイト<br>
+    このページはスクレイピング結果をもとにClaude APIが自動生成したものです。要約・引用は著作権ルール(逐語引用は15語程度・1ソース1回まで)に沿って生成していますが、公開前の確認を推奨します。
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# スクレイピングの中間データ・生成物 (毎回再生成されるので、生の引用元テキストを含め
+# バージョン管理には含めない。公開するのは docs/ 配下の最終HTMLのみ)
+data/*.json
+
+# 旧・ローカル動作確認用の出力先(docs/ に統一したため不要)
+output/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db

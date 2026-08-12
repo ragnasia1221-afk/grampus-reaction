@@ -1,0 +1,42 @@
+name: 名古屋グランパス 反応まとめ 自動更新
+
+on:
+  schedule:
+    # 18:00 UTC = 03:00 JST。夜の試合でもコメント欄が一晩分たまってから収集する。
+    - cron: "0 18 * * *"
+  workflow_dispatch: {}  # GitHub UIやgh CLIから手動実行したい時用
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pipeline (自動検出→スクレイピング→Claude生成→HTML描画)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python src/run_pipeline.py
+
+      - name: Commit & push if docs/ changed
+        run: |
+          if [ -n "$(git status --porcelain docs/)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add docs/
+            git commit -m "自動更新: 新しい試合の反応まとめを追加"
+            git push
+          else
+            echo "docs/ に変更なし。何もコミットしません。"
+          fi

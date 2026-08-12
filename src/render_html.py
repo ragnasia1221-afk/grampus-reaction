@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import json
+import unicodedata
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -50,8 +51,16 @@ TEAM_SHORT_NAMES: dict[str, str] = {
 }
 
 
+# jleague.jpは全角英数(例:"横浜Ｆ・マリノス"の"Ｆ")を使うことがあり、TEAM_SHORT_NAMES
+# 辞書のキー(半角)と表記が食い違うことがあるため、NFKC正規化してから照合する。
+_TEAM_SHORT_NAMES_NORMALIZED = {
+    unicodedata.normalize("NFKC", name): short for name, short in TEAM_SHORT_NAMES.items()
+}
+
+
 def _team_short(team_name: str) -> str:
-    return TEAM_SHORT_NAMES.get(team_name, team_name[:2])
+    normalized = unicodedata.normalize("NFKC", team_name)
+    return _TEAM_SHORT_NAMES_NORMALIZED.get(normalized, team_name[:2])
 
 
 def _format_kickoff(kickoff_iso: str | None) -> str:
@@ -109,9 +118,13 @@ def build_context(
 
     # focus_club(このサイトが応援するクラブ)がこの試合のどちら側かによって、
     # セクション見出しの言い回しを「ファン視点」/「中立視点」で出し分ける。
-    if focus_club == match["home_team"]:
+    # (NFKC正規化で全角/半角の表記ゆれを吸収する。例: jleague.jpの"横浜Ｆ・マリノス"の全角Ｆ)
+    def _norm(s: str | None) -> str:
+        return unicodedata.normalize("NFKC", s) if s else ""
+
+    if focus_club is not None and _norm(focus_club) == _norm(match["home_team"]):
         fan_side = "home"
-    elif focus_club == match["away_team"]:
+    elif focus_club is not None and _norm(focus_club) == _norm(match["away_team"]):
         fan_side = "away"
     else:
         fan_side = None

@@ -31,19 +31,36 @@ DATA_DIR = BASE_DIR / "data"
 DOCS_DIR = BASE_DIR / "docs"
 
 NICHAN_BOARD = "https://rio2016.5ch.io/livefoot"
-NICHAN_KEYWORD = "グランパス"
+
+
+def _nichan_keyword_for_team(team_name: str) -> str:
+    """
+    5ch実況スレ探索用のキーワードを決める。
+    スレッドの命名規則はクラブごとにバラバラ(「実況板にも集え！〇〇ファン」
+    「〇〇実況2026☆N」「◆◇◆　〇〇　実況　◆◇◆」等)だが、
+    クラブの通称(ニックネーム)で検索すればどのパターンでも部分一致でヒットする
+    (domesoccer_scraper.TEAM_NICKNAMES の先頭エイリアスを流用)。
+    """
+    aliases = domesoccer_scraper.get_team_aliases(team_name)
+    return aliases[0] if aliases else team_name
 
 
 def log(msg: str) -> None:
     print(f"[pipeline] {msg}", flush=True)
 
 
-def run() -> int:
+def run(team_slug: str = "nagoya") -> int:
+    """
+    team_slug: jleague.jpのクラブURL識別子。既定はグランパス(nagoya)で、
+    GitHub Actionsからの日次実行はこの既定値のまま呼ばれる想定。
+    他クラブの試合で動作確認したい場合は明示的に指定する
+    (例: run_pipeline.py kashima)。
+    """
     DATA_DIR.mkdir(exist_ok=True)
     DOCS_DIR.mkdir(exist_ok=True)
 
     # --- 1. 対象試合の自動検出 -------------------------------------------------
-    match_info = discover_match.find_latest_completed_match()
+    match_info = discover_match.find_latest_completed_match(team_slug=team_slug)
     log(f"最新消化試合: {match_info.game_date} vs {match_info.opponent} (gameId={match_info.game_id})")
 
     output_path = DOCS_DIR / f"{match_info.game_id}.html"
@@ -65,7 +82,11 @@ def run() -> int:
     # --- 3. ドメサカブログ (任意) ------------------------------------------------
     reactions_dict: dict = {"url": "", "comments": [], "tweets": []}
     try:
-        article_ref = discover_match.find_blog_article(match_date=match_date)
+        # 片方のチーム名だけで検索すると、そのチームに言及した無関係な最新記事
+        # (移籍情報・ACL関連など)がヒットして日付フィルタで弾かれることがあるため、
+        # 両チーム名を組み合わせて検索することで対象記事に確実に絞り込む。
+        blog_keyword = f"{match_result.home_team} {match_result.away_team}"
+        article_ref = discover_match.find_blog_article(keyword=blog_keyword, match_date=match_date)
         if article_ref is None:
             log("[警告] ドメサカブログの対応記事が見つかりませんでした。このソースなしで続行します。")
         else:
@@ -86,7 +107,23 @@ def run() -> int:
     # --- 4. 5ch実況スレッド (任意) -----------------------------------------------
     nichan_dict: dict | None = None
     try:
-        threads = nichan_scraper.find_threads(NICHAN_BOARD, NICHAN_KEYWORD)
+        # FOCUS_CLUBが関与する試合ならその実況スレを、無関係な試合(中立視点)ならhome側の実況スレを探す
+        if generate_article.FOCUS_CLUB in (match_result.home_team, match_result.away_team):
+            nichan_team = generate_article.FOCUS_CLUB
+        else:
+            nichan_team = match_result.home_team
+        opponent_team = (
+            match_result.away_team if nichan_team == match_result.home_team else match_result.home_team
+        )
+        opponent_aliases = domesoccer_scraper.get_team_aliases(opponent_team) or [opponent_team]
+
+        nichan_keyword = _nichan_keyword_for_team(nichan_team)
+        candidates = nichan_scraper.find_threads(NICHAN_BOARD, nichan_keyword)
+        # "地名"系のキーワード(例:「名古屋」)だと対戦相手側が立てた「vs名古屋」実況スレも
+        # ヒットしてしまうことがあるため、相手チームの通称を含むタイトルは除外する
+        threads = [
+            t for t in candidates if not any(alias in t.title for alias in opponent_aliases)
+        ]
         if not threads:
             log("[警告] 5chの対応スレッドが見つかりませんでした。このソースなしで続行します。")
         else:
@@ -190,4 +227,5 @@ def update_index() -> None:
 
 
 if __name__ == "__main__":
-    sys.exit(run())
+    slug = sys.argv[1] if len(sys.argv) > 1 else "nagoya"
+    sys.exit(run(team_slug=slug))

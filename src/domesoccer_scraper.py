@@ -11,6 +11,7 @@ requests + BeautifulSoup だけで完結する。
 from __future__ import annotations
 
 import re
+import unicodedata
 from dataclasses import dataclass, field
 
 import requests
@@ -30,28 +31,44 @@ REACTION_SECTION_MARKER = "ツイッターの反応"
 # 簡易エイリアス表。完全一致ではなく「タグ文字列がチーム名に含まれる/チーム名がタグ文字列を含む」で判定する。
 # 主要J1クラブのニックネームだけ最低限カバーしている。必要に応じて追加すること。
 TEAM_NICKNAMES: dict[str, list[str]] = {
-    "名古屋グランパス": ["名古屋", "グランパス", "鯱"],
-    "清水エスパルス": ["清水", "エスパルス"],
-    "鹿島アントラーズ": ["鹿島", "アントラーズ", "鹿"],
-    "浦和レッズ": ["浦和", "レッズ"],
-    "柏レイソル": ["柏", "レイソル"],
+    # 各リストは「クラブ固有のニックネームを先頭」に並べている(地名を先頭にすると、
+    # 5ch検索(run_pipeline.pyの_nichan_keyword_for_team)で無関係な「vs<地名>」スレ等の
+    # 地名由来の誤ヒットを拾いやすいため。例:「名古屋」だけだと対戦相手側が立てた
+    # 「しみじみ実況 vs名古屋」のようなスレともヒットしてしまう)。
+    "名古屋グランパス": ["グランパス", "名古屋", "鯱"],
+    "清水エスパルス": ["エスパルス", "清水"],
+    "鹿島アントラーズ": ["アントラーズ", "鹿島", "鹿"],
+    "浦和レッズ": ["レッズ", "浦和"],
+    "柏レイソル": ["レイソル", "柏"],
     "FC東京": ["FC東京", "東京", "F東"],
     "東京ヴェルディ": ["ヴェルディ", "東京V"],
-    "川崎フロンターレ": ["川崎", "フロンターレ"],
+    "川崎フロンターレ": ["フロンターレ", "川崎"],
     "横浜F・マリノス": ["マリノス", "横浜FM", "横浜F"],
     "横浜FC": ["横浜FC"],
-    "湘南ベルマーレ": ["湘南", "ベルマーレ"],
-    "アルビレックス新潟": ["新潟", "アルビレックス"],
-    "京都サンガF.C.": ["京都", "サンガ"],
+    "湘南ベルマーレ": ["ベルマーレ", "湘南"],
+    "アルビレックス新潟": ["アルビレックス", "新潟"],
+    "京都サンガF.C.": ["サンガ", "京都"],
     "ガンバ大阪": ["ガンバ", "G大阪"],
     "セレッソ大阪": ["セレッソ", "C大阪"],
-    "ヴィッセル神戸": ["神戸", "ヴィッセル"],
-    "ファジアーノ岡山": ["岡山", "ファジアーノ"],
-    "サンフレッチェ広島": ["広島", "サンフレッチェ"],
-    "アビスパ福岡": ["福岡", "アビスパ"],
-    "町田ゼルビア": ["町田", "ゼルビア"],
-    "サガン鳥栖": ["鳥栖", "サガン"],
+    "ヴィッセル神戸": ["ヴィッセル", "神戸"],
+    "ファジアーノ岡山": ["ファジアーノ", "岡山"],
+    "サンフレッチェ広島": ["サンフレッチェ", "広島"],
+    "アビスパ福岡": ["アビスパ", "福岡"],
+    "町田ゼルビア": ["ゼルビア", "町田"],
+    "サガン鳥栖": ["サガン", "鳥栖"],
 }
+
+# jleague.jpは全角英数(例:"横浜Ｆ・マリノス"の"Ｆ")を使うことがあり、
+# 上のTEAM_NICKNAMES辞書のキー(半角)と表記が食い違うことがある。
+# NFKC正規化してから照合することでこの表記ゆれを吸収する。
+_TEAM_NICKNAMES_NORMALIZED = {
+    unicodedata.normalize("NFKC", name): aliases for name, aliases in TEAM_NICKNAMES.items()
+}
+
+
+def get_team_aliases(team_name: str) -> list[str]:
+    """team_nameの表記ゆれ(全角/半角など)を吸収してTEAM_NICKNAMESを引く。"""
+    return _TEAM_NICKNAMES_NORMALIZED.get(unicodedata.normalize("NFKC", team_name), [])
 
 
 @dataclass
@@ -102,7 +119,7 @@ def _classify_affiliation(team_tag: str, home_team: str, away_team: str) -> str:
     def _matches(full_name: str) -> bool:
         if tag in full_name or full_name in tag:
             return True
-        for alias in TEAM_NICKNAMES.get(full_name, []):
+        for alias in get_team_aliases(full_name):
             if tag in alias or alias in tag:
                 return True
         return False

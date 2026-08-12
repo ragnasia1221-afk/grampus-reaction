@@ -92,7 +92,7 @@ _BASE_SYSTEM_PROMPT = """\
 - summary_paragraphs には原文からの直接引用を一切含めないでください(完全な言い換えのみ)。
 """
 
-_COMMON_SELECTION_POLICY = """\
+_COMMON_SELECTION_POLICY_WITH_NICHAN = """\
 - tweet_picks: 試合後の反応として代表的なものを選ぶ。
 - nichan_picks: 5chの実況スレッドはノイズ(相槌・単発の煽り・脱線)が多いので、
   戦術面の具体的な指摘や、得点・退場など試合の展開に直接反応している、内容のある投稿だけを選ぶこと。
@@ -101,17 +101,34 @@ _COMMON_SELECTION_POLICY = """\
 - 各ソースから選ぶ件数の目安: board_picks 8〜10件、tweet_picks 4〜6件、nichan_picks 5〜8件。
 """
 
+_COMMON_SELECTION_POLICY_NO_NICHAN = """\
+- tweet_picks: 試合後の反応として代表的なものを選ぶ。
+- 5chの投稿データは今回渡されていません。nichan_picks は必ず空配列 [] にしてください
+  (存在しないIDを作って埋めてはいけません)。
+- comment_id / tweet_url は必ず渡されたデータのものと完全に一致させること。存在しないIDを作らないこと。
+- 各ソースから選ぶ件数の目安: board_picks 8〜10件、tweet_picks 4〜6件。
+"""
+
+
+def _names_match(a: str | None, b: str | None) -> bool:
+    """全角/半角の表記ゆれ(例: jleague.jpの"横浜Ｆ・マリノス"の全角Ｆ)を吸収した比較。"""
+    if a is None or b is None:
+        return False
+    return unicodedata.normalize("NFKC", a) == unicodedata.normalize("NFKC", b)
+
 
 def _fan_side(focus_club: str | None, home_team: str, away_team: str) -> str | None:
     """focus_clubがこの試合のhome/awayどちらかを返す。関与していなければNone(=中立視点)。"""
-    if focus_club == home_team:
+    if _names_match(focus_club, home_team):
         return "home"
-    if focus_club == away_team:
+    if _names_match(focus_club, away_team):
         return "away"
     return None
 
 
-def _build_system_prompt(focus_club: str | None, home_team: str, away_team: str) -> str:
+def _build_system_prompt(
+    focus_club: str | None, home_team: str, away_team: str, has_nichan: bool
+) -> str:
     side = _fan_side(focus_club, home_team, away_team)
 
     if side == "home":
@@ -137,7 +154,10 @@ def _build_system_prompt(focus_club: str | None, home_team: str, away_team: str)
   一方のチームの反応に偏らないよう注意すること。他クラブ(other)視点があれば1件程度含めてよい。
 """
 
-    return _BASE_SYSTEM_PROMPT + "\n" + policy + _COMMON_SELECTION_POLICY
+    selection_policy = (
+        _COMMON_SELECTION_POLICY_WITH_NICHAN if has_nichan else _COMMON_SELECTION_POLICY_NO_NICHAN
+    )
+    return _BASE_SYSTEM_PROMPT + "\n" + policy + selection_policy
 
 
 def _build_user_content(match: dict, reactions: dict, nichan: dict | None) -> str:
@@ -343,7 +363,10 @@ def generate_article(
     client = anthropic.Anthropic()
 
     user_content = _build_user_content(match, reactions, nichan)
-    system_prompt = _build_system_prompt(focus_club, match["home_team"], match["away_team"])
+    has_nichan = bool(nichan and nichan.get("posts"))
+    system_prompt = _build_system_prompt(
+        focus_club, match["home_team"], match["away_team"], has_nichan
+    )
 
     response = client.messages.parse(
         model=MODEL_ID,

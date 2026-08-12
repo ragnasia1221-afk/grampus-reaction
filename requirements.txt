@@ -3,3 +3,4 @@ beautifulsoup4>=4.12
 lxml>=5.0
 anthropic>=0.121
 pydantic>=2.13
+jinja2>=3.1

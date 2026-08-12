@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【反応まとめ】アビスパ福岡 0-1 ヴィッセル神戸</title>
+<style>
+  :root{
+    --paper:#f6f2ea;
+    --paper-2:#efe9dc;
+    --ink:#241f19;
+    --ink-soft:#6b6153;
+    --nagoya:#8c1d20;
+    --nagoya-deep:#5c1214;
+    --nagoya-gold:#c8a24a;
+    --shimizu:#e8781f;
+    --shimizu-deep:#b95612;
+    --line:#ddd3bf;
+    --other:#4a5a63;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Meiryo UI","Meiryo","メイリオ","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px;}
+
+  /* header / scoreboard */
+  .masthead{
+    padding:38px 20px 0;
+    text-align:center;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.24em;
+    color:var(--ink-soft);
+    font-weight:700;
+  }
+  .wrap > .masthead h1{
+    font-size:26px;
+    font-weight:700;
+    margin:10px 0 26px;
+    line-height:1.6;
+  }
+
+  .scoreboard{
+    background:linear-gradient(180deg,#2a2019,#1b140f);
+    border-radius:6px;
+    padding:26px 18px 22px;
+    color:#f3ead9;
+    box-shadow:0 10px 30px -14px rgba(0,0,0,.5);
+  }
+  .score-meta{
+    font-size:11px;
+    letter-spacing:.14em;
+    color:#c9bda3;
+    margin-bottom:16px;
+  }
+  .score-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+  }
+  .club{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    width:120px;
+  }
+  .badge{
+    width:52px;height:52px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;font-weight:700;color:#fff;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.25);
+    flex-shrink:0;
+  }
+  .badge.nagoya{background:radial-gradient(circle at 32% 28%,#a6272a,var(--nagoya-deep));}
+  .badge.shimizu{background:radial-gradient(circle at 32% 28%,#f3934a,var(--shimizu-deep));}
+  .badge.mini{width:30px;height:30px;font-size:13px;}
+  .club-name{font-size:13px;font-weight:700;letter-spacing:.04em;}
+  .score-num{
+    font-size:44px;font-weight:700;
+    display:flex;align-items:center;gap:14px;
+  }
+  .score-dash{color:#8f8471;font-size:28px;}
+  .score-goal{font-size:11px;color:#c9bda3;margin-top:2px;}
+
+  /* summary card */
+  .summary{
+    margin-top:26px;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:24px 22px;
+    font-size:15px;
+  }
+  .summary h2{
+    font-size:15px;
+    margin:0 0 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .summary h2::before{
+    content:"";
+    width:14px;height:14px;
+    background:var(--nagoya);
+    display:inline-block;
+    transform:rotate(45deg);
+  }
+  .summary p{margin:0 0 10px;color:#3b352c;}
+  .summary p:last-child{margin-bottom:0;}
+  .summary .cite{font-size:12px;color:var(--ink-soft);margin-top:14px;}
+
+  /* section headers */
+  .section{margin-top:48px;}
+  .section-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .section-head .rule{flex:1;height:1px;background:var(--line);}
+  .section-title{
+    font-size:19px;
+    font-weight:700;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-sub{font-size:12px;color:var(--ink-soft);margin:-10px 0 20px;}
+
+  /* comment cards */
+  .comment{
+    display:flex;
+    gap:12px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .comment:last-child{border-bottom:none;}
+  .comment .who{
+    flex-shrink:0;
+    width:64px;
+    text-align:center;
+  }
+  .comment .who .tag{
+    display:block;
+    font-size:10px;
+    color:var(--ink-soft);
+    margin-top:4px;
+    letter-spacing:.02em;
+  }
+  .comment .body{flex:1;min-width:0;}
+  .comment .meta{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .comment .paraphrase{
+    font-size:14.5px;
+    color:#3b352c;
+    margin-bottom:6px;
+  }
+  .comment .quote{
+    font-size:15.5px;
+    color:var(--ink);
+  }
+  .comment .quote span.line{
+    display:inline;
+  }
+  .comment .quote span.line::before{content:"「";color:var(--ink-soft);}
+  .comment .quote span.line::after{content:"」";color:var(--ink-soft);}
+
+  .badge.other{background:linear-gradient(135deg,#6b7c86,var(--other));}
+  .badge.nichan{background:linear-gradient(135deg,#6b5b8c,#3f3357);}
+
+  /* X post cards */
+  .xpost{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    display:flex;
+    gap:12px;
+  }
+  .xpost .avatar{
+    width:36px;height:36px;border-radius:50%;
+    background:linear-gradient(135deg,#f3934a,var(--shimizu-deep));
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:13px;font-weight:700;
+  }
+  .xpost .handle{font-size:13px;font-weight:700;}
+  .xpost .at{font-size:12px;color:var(--ink-soft);font-weight:400;margin-left:4px;}
+  .xpost .paraphrase{font-size:13.5px;color:#3b352c;margin-top:4px;}
+  .xpost .quote{font-size:14.5px;margin-top:4px;}
+
+  .footnote{
+    margin-top:20px;
+    background:var(--paper-2);
+    border-left:3px solid var(--nagoya-gold);
+    padding:14px 16px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    border-radius:0 4px 4px 0;
+  }
+
+  .source-note{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:60px;
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:480px){
+    .score-num{font-size:34px;}
+    .club{width:92px;}
+    .badge{width:44px;height:44px;font-size:18px;}
+    .comment{gap:9px;}
+    .comment .who{width:52px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div class="eyebrow">MATCH REACTION FILE</div>
+    <h1>アビスパ福岡 0-1 ヴィッセル神戸<br>掲示板・Xの反応まとめ</h1>
+  </div>
+
+  <div class="scoreboard">
+    <div class="score-meta">2026.08.08 (SAT) 19:00 KICK OFF ／ 第1節 ／ ベスト電器スタジアム ／ 観衆 17,538人</div>
+    <div class="score-row">
+      <div class="club">
+        <div class="badge nagoya">ア</div>
+        <div class="club-name">アビスパ福岡</div>
+      </div>
+      <div class="score-num">0<span class="score-dash">−</span>1</div>
+      <div class="club">
+        <div class="badge shimizu">ヴ</div>
+        <div class="club-name">ヴィッセル神戸</div>
+      </div>
+    </div>
+    <div class="score-goal">得点：大迫 勇也（ヴ）23&#39;　／　警告・退場：重見 柾斗、前嶋 洋太（ア）　マテウス トゥーレル（ヴ）</div>
+  </div>
+
+  <div class="summary">
+    <h2>まとめ</h2>
+    
+    <p>2026年シーズンJ1リーグ第1節、アビスパ福岡はホームのベスト電器スタジアムでヴィッセル神戸を迎えた。試合を決めたのは前半23分、ロングスローからの混戦を大迫勇也が押し込んだ一撃で、神戸が終始リードを守り切る展開となった。</p>
+    
+    <p>得点シーンはスローインを起点としたセットプレー崩れからのゴールで、福岡サイドではスローイン処理のミスや守備の連携不足を悔やむ声が多く見られた。一方で後半は福岡が若い選手を中心に神戸を押し込む時間帯を作り、内容面では手応えを感じたファンも多かった。</p>
+    
+    <p>試合を通じてファウルや判定を巡る議論が噴出し、主審の判定基準に対する不満は両クラブのサポーターから共通して上がった。特に現地観戦者からは、判定への納得感の薄さが試合後まで話題になったことがうかがえる。</p>
+    
+    <p>采配面では神戸のスキッベ監督が交代枠を使い切らなかったことに疑問の声が集まり、暑さの中で選手の運動量が落ちていく後半の展開に不安を覚えたファンも少なくなかった。それでも神戸は開幕戦を勝利で終え、大迫の存在感を再確認する形となった。</p>
+    
+    <p>福岡側は敗れはしたものの、新加入選手や若手の躍動に期待を寄せる声が多く、次節へ向けて前向きな雰囲気も感じられた。両クラブのファンの反応は勝敗を超えて、それぞれのチーム状況を映し出す内容となった。</p>
+    
+    <div class="cite">出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿</div>
+  </div>
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="badge mini nagoya">ア</span>掲示板の反応：福岡サポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini other">名</div><span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント3</div>
+        
+        <div class="quote"><span class="line">前嶋が手を滑らせてファウルスロー</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini other">蜂</div><span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント4</div>
+        
+        <div class="quote"><span class="line">スローイン5秒ルールから失点してしまった</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nagoya">ア</div><span class="tag">福岡</span></div>
+      <div class="body">
+        <div class="meta">コメント13</div>
+        
+        <div class="quote"><span class="line">悔しい！　でも楽しかったし</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nagoya">ア</div><span class="tag">福岡</span></div>
+      <div class="body">
+        <div class="meta">コメント38</div>
+        
+        <div class="quote"><span class="line">次節連敗したら流石にマズイ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nagoya">ア</div><span class="tag">福岡</span></div>
+      <div class="body">
+        <div class="meta">コメント46</div>
+        
+        <div class="quote"><span class="line">これじゃ残留は厳しい</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini other">名</div><span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント49</div>
+        
+        <div class="quote"><span class="line">リーグで1番荒いチームの自覚を持った方がいい</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="badge mini shimizu">ヴ</span>掲示板の反応：神戸サポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini shimizu">ヴ</div><span class="tag">神戸</span></div>
+      <div class="body">
+        <div class="meta">コメント10</div>
+        
+        <div class="quote"><span class="line">交代枠を余らせまくるスキッベ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini shimizu">ヴ</div><span class="tag">神戸</span></div>
+      <div class="body">
+        <div class="meta">コメント15</div>
+        
+        <div class="quote"><span class="line">トゥーレルはリーグNo.1CBだね</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini shimizu">ヴ</div><span class="tag">神戸</span></div>
+      <div class="body">
+        <div class="meta">コメント33</div>
+        
+        <div class="quote"><span class="line">唯一辞任を願った監督ですわ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini shimizu">ヴ</div><span class="tag">神戸</span></div>
+      <div class="body">
+        <div class="meta">コメント41</div>
+        
+        <div class="quote"><span class="line">上田主審がよっちのファールアピールに引っかかりまくってくれて助かった</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">試合後：Xの反応</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="xpost">
+      <div class="avatar">よ</div>
+      <div class="body">
+        <div><span class="handle">よっぴ</span><span class="at">@yopissel</span></div>
+        <div class="paraphrase">開幕戦の勝利を喜ぶ神戸サポーターの率直な歓喜の声。</div>
+        <div class="quote"><span class="line">勝ったでええええええええええ</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">ミ</div>
+      <div class="body">
+        <div><span class="handle">ミルパン</span><span class="at">@gogo3201kk</span></div>
+        <div class="paraphrase">現地観戦者として後半の展開に緊張しながらも守り切った選手たちを称える一方、監督の采配には物足りなさを感じている。</div>
+        <div class="quote"><span class="line">スキッベさん、ちゃんと交代枠使ってください</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">#</div>
+      <div class="body">
+        <div><span class="handle">#𝑵𝟗</span><span class="at">@Nt9Com</span></div>
+        <div class="paraphrase">大迫のゴールにつながる駆け引きの技術を分析し、常に得点を生み出せる要因を解説している投稿。</div>
+        <div class="quote"><span class="line">得点を獲り続けられる理由がそこにはあります</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">圭</div>
+      <div class="body">
+        <div><span class="handle">圭爺</span><span class="at">@visselkg</span></div>
+        <div class="paraphrase">開幕勝利を喜び、暑さの中で走り切った選手たちの結果を評価しつつ、今後もチャレンジャー精神で戦い続けることを呼びかけている。</div>
+        <div class="quote"><span class="line">新シーズン勝利の船出</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">織</div>
+      <div class="body">
+        <div><span class="handle">織幡あや(綾織)</span><span class="at">@Texilo_S</span></div>
+        <div class="paraphrase">アウェイでも安定した活躍を見せる大迫のすごさを親しみを込めて表現している投稿。</div>
+        <div class="quote"><span class="line">大迫はんぱないって</span></div>
+      </div>
+    </div>
+    
+  </div>
+  
+
+  <div class="source-note">
+    出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿<br>
+    試合結果出典：Ｊリーグ公式サイト<br>
+    このページはスクレイピング結果をもとにClaude APIが自動生成したものです。要約・引用は著作権ルール(逐語引用は15語程度・1ソース1回まで)に沿って生成していますが、公開前の確認を推奨します。
+  </div>
+
+</div>
+</body>
+</html>

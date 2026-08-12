@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【反応まとめ】東京ヴェルディ 1-1 川崎フロンターレ</title>
+<style>
+  :root{
+    --paper:#f6f2ea;
+    --paper-2:#efe9dc;
+    --ink:#241f19;
+    --ink-soft:#6b6153;
+    --nagoya:#8c1d20;
+    --nagoya-deep:#5c1214;
+    --nagoya-gold:#c8a24a;
+    --shimizu:#e8781f;
+    --shimizu-deep:#b95612;
+    --line:#ddd3bf;
+    --other:#4a5a63;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Meiryo UI","Meiryo","メイリオ","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px;}
+
+  /* header / scoreboard */
+  .masthead{
+    padding:38px 20px 0;
+    text-align:center;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.24em;
+    color:var(--ink-soft);
+    font-weight:700;
+  }
+  .wrap > .masthead h1{
+    font-size:26px;
+    font-weight:700;
+    margin:10px 0 26px;
+    line-height:1.6;
+  }
+
+  .scoreboard{
+    background:linear-gradient(180deg,#2a2019,#1b140f);
+    border-radius:6px;
+    padding:26px 18px 22px;
+    color:#f3ead9;
+    box-shadow:0 10px 30px -14px rgba(0,0,0,.5);
+  }
+  .score-meta{
+    font-size:11px;
+    letter-spacing:.14em;
+    color:#c9bda3;
+    margin-bottom:16px;
+  }
+  .score-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+  }
+  .club{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    width:120px;
+  }
+  .badge{
+    width:52px;height:52px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;font-weight:700;color:#fff;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.25);
+    flex-shrink:0;
+  }
+  .badge.nagoya{background:radial-gradient(circle at 32% 28%,#a6272a,var(--nagoya-deep));}
+  .badge.shimizu{background:radial-gradient(circle at 32% 28%,#f3934a,var(--shimizu-deep));}
+  .badge.mini{width:30px;height:30px;font-size:13px;}
+  .club-name{font-size:13px;font-weight:700;letter-spacing:.04em;}
+  .score-num{
+    font-size:44px;font-weight:700;
+    display:flex;align-items:center;gap:14px;
+  }
+  .score-dash{color:#8f8471;font-size:28px;}
+  .score-goal{font-size:11px;color:#c9bda3;margin-top:2px;}
+
+  /* summary card */
+  .summary{
+    margin-top:26px;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:24px 22px;
+    font-size:15px;
+  }
+  .summary h2{
+    font-size:15px;
+    margin:0 0 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .summary h2::before{
+    content:"";
+    width:14px;height:14px;
+    background:var(--nagoya);
+    display:inline-block;
+    transform:rotate(45deg);
+  }
+  .summary p{margin:0 0 10px;color:#3b352c;}
+  .summary p:last-child{margin-bottom:0;}
+  .summary .cite{font-size:12px;color:var(--ink-soft);margin-top:14px;}
+
+  /* section headers */
+  .section{margin-top:48px;}
+  .section-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .section-head .rule{flex:1;height:1px;background:var(--line);}
+  .section-title{
+    font-size:19px;
+    font-weight:700;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-sub{font-size:12px;color:var(--ink-soft);margin:-10px 0 20px;}
+
+  /* comment cards */
+  .comment{
+    display:flex;
+    gap:12px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .comment:last-child{border-bottom:none;}
+  .comment .who{
+    flex-shrink:0;
+    width:64px;
+    text-align:center;
+  }
+  .comment .who .tag{
+    display:block;
+    font-size:10px;
+    color:var(--ink-soft);
+    margin-top:4px;
+    letter-spacing:.02em;
+  }
+  .comment .body{flex:1;min-width:0;}
+  .comment .meta{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .comment .paraphrase{
+    font-size:14.5px;
+    color:#3b352c;
+    margin-bottom:6px;
+  }
+  .comment .quote{
+    font-size:15.5px;
+    color:var(--ink);
+  }
+  .comment .quote span.line{
+    display:inline;
+  }
+  .comment .quote span.line::before{content:"「";color:var(--ink-soft);}
+  .comment .quote span.line::after{content:"」";color:var(--ink-soft);}
+
+  .badge.other{background:linear-gradient(135deg,#6b7c86,var(--other));}
+  .badge.nichan{background:linear-gradient(135deg,#6b5b8c,#3f3357);}
+
+  /* X post cards */
+  .xpost{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    display:flex;
+    gap:12px;
+  }
+  .xpost .avatar{
+    width:36px;height:36px;border-radius:50%;
+    background:linear-gradient(135deg,#f3934a,var(--shimizu-deep));
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:13px;font-weight:700;
+  }
+  .xpost .handle{font-size:13px;font-weight:700;}
+  .xpost .at{font-size:12px;color:var(--ink-soft);font-weight:400;margin-left:4px;}
+  .xpost .paraphrase{font-size:13.5px;color:#3b352c;margin-top:4px;}
+  .xpost .quote{font-size:14.5px;margin-top:4px;}
+
+  .footnote{
+    margin-top:20px;
+    background:var(--paper-2);
+    border-left:3px solid var(--nagoya-gold);
+    padding:14px 16px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    border-radius:0 4px 4px 0;
+  }
+
+  .source-note{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:60px;
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:480px){
+    .score-num{font-size:34px;}
+    .club{width:92px;}
+    .badge{width:44px;height:44px;font-size:18px;}
+    .comment{gap:9px;}
+    .comment .who{width:52px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div class="eyebrow">MATCH REACTION FILE</div>
+    <h1>東京ヴェルディ 1-1 川崎フロンターレ<br>掲示板・Xの反応まとめ</h1>
+  </div>
+
+  <div class="scoreboard">
+    <div class="score-meta">2026.08.09 (SUN) 18:00 KICK OFF ／ 第1節 ／ 味の素スタジアム ／ 観衆 27,452人</div>
+    <div class="score-row">
+      <div class="club">
+        <div class="badge nagoya">東</div>
+        <div class="club-name">東京ヴェルディ</div>
+      </div>
+      <div class="score-num">1<span class="score-dash">−</span>1</div>
+      <div class="club">
+        <div class="badge shimizu">川</div>
+        <div class="club-name">川崎フロンターレ</div>
+      </div>
+    </div>
+    <div class="score-goal">得点：溝口 修平（東）46&#39;、ラザル ロマニッチ（川）90+6&#39;　／　警告・退場：伊藤 達哉（川）</div>
+  </div>
+
+  <div class="summary">
+    <h2>まとめ</h2>
+    
+    <p>2026シーズンJ1リーグ第1節、東京ヴェルディと川崎フロンターレが味の素スタジアムで対戦し、1-1のドローに終わった。前半は雨模様の中でスコアレスのまま終了し、後半開始直後に東京ヴェルディの溝口修平がゴールを決めて先制。その後は川崎が反撃を試み、ヴェルディが耐える展開が続いたが、試合終了間際の90+6分、ヴェルディのクリアがミスとなり、そのこぼれ球をラザル ロマニッチが押し込んで川崎が土壇場で追いついた。</p>
+    
+    <p>試合中盤の68分には川崎の伊藤達哉に警告が出されるなど、両チームとも激しい球際の攻防を見せた一戦となった。結果としては両クラブともに勝ち点1を分け合う形となり、開幕戦としては課題を残す内容だったとの見方が多い。</p>
+    
+    <p>サポーターの反応では、東京ヴェルディ側からは怪我人が多い中で見せた粘り強い守備や溝口の得点を評価する声がありつつも、終盤の失点や攻撃の組み立てに関する不満も見られた。一方、川崎フロンターレ側からは終了間際に追いついたことへの安堵とともに、前半の停滞した内容やチーム全体の完成度への疑問を指摘する声が目立った。中立的な立場のファンからは、両チームの今後のシーズンを不安視する声や、個々の選手プレーへの評価など様々な視点が寄せられている。</p>
+    
+    <div class="cite">出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿</div>
+  </div>
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="badge mini nagoya">東</span>掲示板の反応：東京Vサポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini other">海</div><span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント4</div>
+        
+        <div class="quote"><span class="line">押し込んだ前半に攻めきれなかったのが全て</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini other">緑</div><span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント10</div>
+        
+        <div class="quote"><span class="line">間に合せの交代で苦しかった</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini other">鹿</div><span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント15</div>
+        
+        <div class="quote"><span class="line">溝口と染野素晴らしい</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini other">名</div><span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント42</div>
+        
+        <div class="quote"><span class="line">今期中に監督交代ありそう</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini other">緑</div><span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント70</div>
+        
+        <div class="quote"><span class="line">次の試合はすぐに始まる</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="badge mini shimizu">川</span>掲示板の反応：川崎サポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini shimizu">川</div><span class="tag">川崎</span></div>
+      <div class="body">
+        <div class="meta">コメント1</div>
+        
+        <div class="quote"><span class="line">どっちにとっても負けに等しいドロー</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini shimizu">川</div><span class="tag">川崎</span></div>
+      <div class="body">
+        <div class="meta">コメント7</div>
+        
+        <div class="quote"><span class="line">棚ぼたの儲けもんやろ(笑)</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini shimizu">川</div><span class="tag">川崎</span></div>
+      <div class="body">
+        <div class="meta">コメント32</div>
+        
+        <div class="quote"><span class="line">今シーズンも長谷部サッカーには期待できん</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini shimizu">川</div><span class="tag">川崎</span></div>
+      <div class="body">
+        <div class="meta">コメント36</div>
+        
+        <div class="quote"><span class="line">長谷部監督になって1年半以上やってこれなんだって</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini shimizu">川</div><span class="tag">川崎</span></div>
+      <div class="body">
+        <div class="meta">コメント79</div>
+        
+        <div class="quote"><span class="line">1試合平均1.5失点</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">試合後：Xの反応</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="xpost">
+      <div class="avatar">が</div>
+      <div class="body">
+        <div><span class="handle">がまー</span><span class="at">@urawareds_spurs</span></div>
+        <div class="paraphrase">終了間際のクリアが不運な形でつながり、川崎が同点に追いついたことで、東京ヴェルディにとっては勝利を逃した形になったという指摘。</div>
+        <div class="quote"><span class="line">ヴェルディ勝てたなこれは</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">決</div>
+      <div class="body">
+        <div><span class="handle">決闘王Ｆ.Ｋ@夏コミ8/15(土) 西2ホール い12a</span><span class="at">@duelkingfk</span></div>
+        <div class="paraphrase">開幕戦を終了直前の失点で引き分けに終えたことへの悔しさを示しつつ、次戦への切り替えを誓うファンの声。</div>
+        <div class="quote"><span class="line">あと数十秒耐え忍べば勝てたのに</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">ね</div>
+      <div class="body">
+        <div><span class="handle">ねこさん(とり)</span><span class="at">@0tasaka</span></div>
+        <div class="paraphrase">もう少し守り切れれば決勝点を決めた選手が試合の主役になれたはずだったという惜しむ声。</div>
+        <div class="quote"><span class="line">溝口さんをヒーローにしてあげられたのに</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">る</div>
+      <div class="body">
+        <div><span class="handle">るーすけ@ななつ星☆☆☆☆☆☆☆</span><span class="at">@rvs1980</span></div>
+        <div class="paraphrase">川崎サポーターから、土壇場での同点弾に対する歓喜の反応。引き分けでも収穫があったとの総括。</div>
+        <div class="quote"><span class="line">ロマニッチが起死回生の同点弾</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">サ</div>
+      <div class="body">
+        <div><span class="handle">サッカーキング</span><span class="at">@SoccerKingJP</span></div>
+        <div class="paraphrase">メディアの報道として、東京ヴェルディが終了間際の失点で勝利を逃し、両クラブが勝ち点を分け合った経緯が伝えられている。</div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  <div class="source-note">
+    出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿<br>
+    試合結果出典：Ｊリーグ公式サイト<br>
+    このページはスクレイピング結果をもとにClaude APIが自動生成したものです。要約・引用は著作権ルール(逐語引用は15語程度・1ソース1回まで)に沿って生成していますが、公開前の確認を推奨します。
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,4 +1,4 @@
-name: 名古屋グランパス 反応まとめ 自動更新
+name: J1 反応まとめ 自動更新
 
 on:
   schedule:
@@ -24,10 +24,10 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run pipeline (自動検出→スクレイピング→Claude生成→HTML描画)
+      - name: Run batch (J1全クラブを走査し、新しい消化試合だけ生成)
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python src/run_pipeline.py
+        run: python src/run_batch.py
 
       - name: Commit & push if docs/ changed
         run: |

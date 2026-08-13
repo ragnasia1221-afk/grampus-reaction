@@ -37,7 +37,19 @@ class BlogArticle:
     published_at: str  # ISO8601
 
 
-def find_latest_completed_match(team_slug: str = "nagoya", timeout: int = 20) -> LatestMatch:
+def find_latest_completed_match(
+    team_slug: str = "nagoya", timeout: int = 20, league_name: str | None = "明治安田Ｊ１"
+) -> LatestMatch:
+    """
+    league_name: gameLogInClubByYear の各試合エントリには "leagueName" フィールドがあり、
+    J1リーグ戦以外(ACL・天皇杯・シーズン前の"Ｊ１百年構想"など)の試合も同じログに混在している。
+    指定した場合はこの値と完全一致する試合だけを対象にする(既定はJ1リーグ戦のみ)。
+    Noneを渡すと従来通りリーグ種別を問わず最新の試合を対象にする。
+
+    既知の不具合: G大阪(gosaka)を個別に処理すると、直近消化試合がACLプレーオフ扱いになり
+    J1試合ページのパースに失敗していた(浦和側から処理すれば正しく取れていたので実害は
+    無かったが、run_batch.py実行時にエラーログが出ていた)。この絞り込みで解消される。
+    """
     url = f"https://www.jleague.jp/club/{team_slug}/day/"
     resp = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=timeout)
     resp.raise_for_status()
@@ -54,6 +66,9 @@ def find_latest_completed_match(team_slug: str = "nagoya", timeout: int = 20) ->
                             games.extend(
                                 g for g in season_games if isinstance(g, dict) and "gameId" in g
                             )
+
+    if league_name is not None:
+        games = [g for g in games if g.get("leagueName") == league_name]
 
     if not games:
         raise RuntimeError(f"{url} から試合ログ(gameLogInClubByYear)が見つかりませんでした。")

@@ -16,10 +16,19 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
+import emblem
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
 TEMPLATE_DIR = BASE_DIR / "templates"
 OUTPUT_DIR = BASE_DIR / "output"
+DOCS_DIR = BASE_DIR / "docs"
+EMBLEM_ASSETS_DIR = DOCS_DIR / "assets" / "emblems"
+
+# エンブレム切り出しに失敗した場合の色つき円バッジのフォールバック色
+# (クラブカラーが取れない場合はこの色を使う)
+FALLBACK_HOME_COLOR = "#8c1d20"
+FALLBACK_AWAY_COLOR = "#e8781f"
 
 JST = timezone(timedelta(hours=9))
 WEEKDAY_JA = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
@@ -46,8 +55,11 @@ TEAM_SHORT_NAMES: dict[str, str] = {
     "ファジアーノ岡山": "岡山",
     "サンフレッチェ広島": "広島",
     "アビスパ福岡": "福岡",
-    "町田ゼルビア": "町田",
+    "FC町田ゼルビア": "町田",  # jleague.jpの正式表記は「ＦＣ町田ゼルビア」(NFKC正規化後の半角表記をキーにしている)
     "サガン鳥栖": "鳥栖",
+    "ジェフユナイテッド千葉": "千葉",
+    "水戸ホーリーホック": "水戸",
+    "V・ファーレン長崎": "長崎",  # jleague.jpの正式表記は「Ｖ・ファーレン長崎」
 }
 
 
@@ -110,11 +122,22 @@ def build_context(
     article: dict,
     nichan: dict | None = None,
     focus_club: str | None = None,
+    game_id: int | None = None,
 ) -> dict:
     home_short = _team_short(match["home_team"])
     away_short = _team_short(match["away_team"])
     home_badge_letter = match["home_team"][0]
     away_badge_letter = match["away_team"][0]
+
+    # クラブエンブレム画像切り出し + クラブカラー取得。
+    # スプライト画像のダウンロード等に失敗した場合はNoneを返す設計なので、
+    # テンプレート側は emblem_src が無ければ従来通りの色つき円+文字表示にフォールバックする。
+    home_visual = match.get("home_visual")
+    away_visual = match.get("away_visual")
+    home_emblem_src = emblem.get_emblem_relative_path(home_visual, EMBLEM_ASSETS_DIR)
+    away_emblem_src = emblem.get_emblem_relative_path(away_visual, EMBLEM_ASSETS_DIR)
+    home_color = (home_visual or {}).get("primary_color") or FALLBACK_HOME_COLOR
+    away_color = (away_visual or {}).get("primary_color") or FALLBACK_AWAY_COLOR
 
     # focus_club(このサイトが応援するクラブ)がこの試合のどちら側かによって、
     # セクション見出しの言い回しを「ファン視点」/「中立視点」で出し分ける。
@@ -151,8 +174,9 @@ def build_context(
             entry = {
                 **pick,
                 "number": source.get("number"),
-                "badge_class": "nagoya",
                 "badge_letter": home_badge_letter,
+                "badge_color": home_color,
+                "emblem_src": home_emblem_src,
                 "tag_label": home_short,
             }
             home_comments.append(entry)
@@ -160,8 +184,9 @@ def build_context(
             entry = {
                 **pick,
                 "number": source.get("number"),
-                "badge_class": "shimizu",
                 "badge_letter": away_badge_letter,
+                "badge_color": away_color,
+                "emblem_src": away_emblem_src,
                 "tag_label": away_short,
             }
             away_comments.append(entry)
@@ -170,8 +195,9 @@ def build_context(
             entry = {
                 **pick,
                 "number": source.get("number"),
-                "badge_class": "other",
                 "badge_letter": raw_tag[0] if raw_tag else "他",
+                "badge_color": None,  # Noneならテンプレート側でCSSの--otherを使う
+                "emblem_src": None,  # 他クラブは特定できないためエンブレム無し
                 "tag_label": "他クラブ",
             }
             home_comments.append(entry)  # テンプレート原案どおり、他クラブ視点は名古屋側セクションに混ぜる
@@ -204,6 +230,26 @@ def build_context(
     blog_url = reactions.get("url", "")
     nichan_thread_title = (nichan or {}).get("title", "")
 
+    # ページ内に埋め込む構造化メタデータ。一覧ページ・前後の試合ナビゲーションは
+    # このJSONを全ページから収集して後処理(run_pipeline.update_index)で組み立てる。
+    # (ファイル名やtitleタグの文字列パースに頼らない、自己記述的な設計)
+    match_meta = {
+        "game_id": game_id,
+        "section": match.get("section", ""),
+        "kickoff_iso": match.get("kickoff_iso"),
+        "home_team": match["home_team"],
+        "away_team": match["away_team"],
+        "home_score": match["home_score"],
+        "away_score": match["away_score"],
+        "home_short": home_short,
+        "away_short": away_short,
+        "home_emblem_src": home_emblem_src,
+        "away_emblem_src": away_emblem_src,
+        "home_color": home_color,
+        "away_color": away_color,
+        "fan_side": fan_side,
+    }
+
     return {
         "home_team": match["home_team"],
         "away_team": match["away_team"],
@@ -213,6 +259,10 @@ def build_context(
         "away_short": away_short,
         "home_badge_letter": home_badge_letter,
         "away_badge_letter": away_badge_letter,
+        "home_emblem_src": home_emblem_src,
+        "away_emblem_src": away_emblem_src,
+        "home_color": home_color,
+        "away_color": away_color,
         "kickoff_display": _format_kickoff(match.get("kickoff_iso")),
         "section": match.get("section", ""),
         "stadium": match.get("stadium", ""),
@@ -228,6 +278,8 @@ def build_context(
         "nichan_picks": nichan_picks,
         "nichan_thread_title": nichan_thread_title,
         "blog_source_name": _blog_source_name(blog_url),
+        "game_id": game_id,
+        "match_meta_json": json.dumps(match_meta, ensure_ascii=False),
     }
 
 
@@ -253,6 +305,7 @@ def render(
     output_path: Path,
     nichan_path: Path | None = None,
     focus_club: str | None = None,
+    game_id: int | None = None,
 ) -> None:
     match = json.loads(match_path.read_text(encoding="utf-8"))
     reactions = json.loads(reactions_path.read_text(encoding="utf-8"))
@@ -263,7 +316,7 @@ def render(
         else None
     )
 
-    context = build_context(match, reactions, article, nichan, focus_club)
+    context = build_context(match, reactions, article, nichan, focus_club, game_id)
     render_from_context(context, output_path)
 
 

@@ -59,6 +59,17 @@ class CardEvent:
 
 
 @dataclass
+class TeamVisual:
+    """クラブエンブレム(スプライト画像上の切り出し位置)とクラブカラー。"""
+    emblem_sprite_url: str | None    # 例: "/img/common/2026_27/team_emb_l.webp"
+    emblem_x: int | None             # スプライト内のオフセット(background-position相当、通常負値)
+    emblem_y: int | None
+    emblem_cell_size: int | None     # 1エンブレムあたりの正方形の一辺(px)
+    primary_color: str | None        # 例: "#D80C18"
+    secondary_color: str | None
+
+
+@dataclass
 class MatchResult:
     url: str
     section: str                 # 節 (例: "第1節")
@@ -71,6 +82,8 @@ class MatchResult:
     away_score: int
     goals: list[GoalEvent] = field(default_factory=list)
     cards: list[CardEvent] = field(default_factory=list)
+    home_visual: TeamVisual | None = None
+    away_visual: TeamVisual | None = None
 
     def summary_line(self) -> str:
         return f"{self.home_team} {self.home_score}-{self.away_score} {self.away_team}"
@@ -90,6 +103,8 @@ class MatchResult:
             "away_score": self.away_score,
             "goals": [g.__dict__ for g in self.goals],
             "cards": [c.__dict__ for c in self.cards],
+            "home_visual": self.home_visual.__dict__ if self.home_visual else None,
+            "away_visual": self.away_visual.__dict__ if self.away_visual else None,
         }
 
 
@@ -287,6 +302,17 @@ def parse_match_result(html: str, url: str = "") -> MatchResult:
     date_raw = header.get("date")  # 例: "$D2026-08-08T10:00:00.000Z"
     kickoff_iso = date_raw[2:] if isinstance(date_raw, str) and date_raw.startswith("$D") else date_raw
 
+    def _team_visual(team: dict) -> TeamVisual:
+        icon = team.get("icon") or {}
+        return TeamVisual(
+            emblem_sprite_url=icon.get("imageUrl"),
+            emblem_x=icon.get("x"),
+            emblem_y=icon.get("y"),
+            emblem_cell_size=icon.get("sourceCellSize"),
+            primary_color=team.get("primaryColor"),
+            secondary_color=team.get("secondaryColor"),
+        )
+
     result = MatchResult(
         url=url,
         section=header.get("section", ""),
@@ -299,6 +325,8 @@ def parse_match_result(html: str, url: str = "") -> MatchResult:
         away_score=header["awayTeam"].get("score", 0),
         goals=_extract_goals_from_header(header),
         cards=_find_cards(chunks),
+        home_visual=_team_visual(header["homeTeam"]),
+        away_visual=_team_visual(header["awayTeam"]),
     )
     return result
 

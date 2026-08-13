@@ -15,8 +15,10 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import re
 import sys
 import traceback
+from datetime import timedelta, timezone
 from pathlib import Path
 
 import discover_match
@@ -173,7 +175,12 @@ def run(team_slug: str = "nagoya") -> int:
 
     # --- 6. HTML描画 -------------------------------------------------------------
     context = render_html.build_context(
-        match_dict, reactions_dict, generated_dict, nichan_dict, focus_club=generate_article.FOCUS_CLUB
+        match_dict,
+        reactions_dict,
+        generated_dict,
+        nichan_dict,
+        focus_club=generate_article.FOCUS_CLUB,
+        game_id=match_info.game_id,
     )
     render_html.render_from_context(context, output_path)
     log(f"HTML生成OK: {output_path}")
@@ -185,41 +192,153 @@ def run(team_slug: str = "nagoya") -> int:
     return 0
 
 
+_MATCH_META_RE = re.compile(
+    r'<script type="application/json" id="match-meta">(.*?)</script>', re.S
+)
+_PAGE_NAV_RE = re.compile(r"<!--PAGE-NAV-START-->.*?<!--PAGE-NAV-END-->", re.S)
+
+JST = timezone(timedelta(hours=9))
+_WEEKDAY_JA = ["月", "火", "水", "木", "金", "土", "日"]
+
+
+def _extract_match_meta(html_text: str) -> dict | None:
+    """ページ末尾に埋め込まれた <script id="match-meta"> からJSONを取り出す。
+    (ファイル名やtitleタグの文字列パースに頼らない、自己記述的な設計)"""
+    m = _MATCH_META_RE.search(html_text)
+    if not m:
+        return None
+    try:
+        return json.loads(m.group(1))
+    except json.JSONDecodeError:
+        return None
+
+
+def _format_short_date(kickoff_iso: str | None) -> str:
+    if not kickoff_iso:
+        return ""
+    dt_jst = dt.datetime.fromisoformat(kickoff_iso.replace("Z", "+00:00")).astimezone(JST)
+    return f"{dt_jst.month}/{dt_jst.day}({_WEEKDAY_JA[dt_jst.weekday()]})"
+
+
+def _mini_badge_html(short_name: str, emblem_src: str | None, color: str | None) -> str:
+    if emblem_src:
+        return f'<span class="mb"><img src="{emblem_src}" alt=""></span>'
+    letter = short_name[0] if short_name else "?"
+    bg = color or "#4a5a63"
+    return f'<span class="mb" style="background:{bg}">{letter}</span>'
+
+
+def _nav_block_html(prev_meta: dict | None, next_meta: dict | None) -> str:
+    def _link(meta: dict | None, arrow: str) -> str:
+        if meta is None:
+            return '<span class="page-nav-empty"></span>'
+        label = f"{meta['home_short']} {meta['home_score']}-{meta['away_score']} {meta['away_short']}"
+        cls = "page-nav-prev" if arrow == "←" else "page-nav-next"
+        return f'<a class="{cls}" href="{meta["game_id"]}.html">{arrow} {label}</a>'
+
+    return (
+        "<!--PAGE-NAV-START-->\n"
+        '  <div id="page-nav" class="page-nav">\n'
+        '    <a class="page-nav-back" href="index.html">← 一覧に戻る</a>\n'
+        f'    <div class="page-nav-adjacent">{_link(prev_meta, "←")}{_link(next_meta, "→")}</div>\n'
+        "  </div>\n"
+        "  <!--PAGE-NAV-END-->"
+    )
+
+
 def update_index() -> None:
-    """docs/ 配下の各試合ページを走査し、新しい順に並べた一覧ページを作る。"""
-    pages = []
-    for f in sorted(DOCS_DIR.glob("*.html"), reverse=True):
+    """docs/ 配下の各試合ページに埋め込まれた match-meta を集約し、
+    (1) 節・日付ごとに整理した一覧ページ(docs/index.html)
+    (2) 各ページの「前後の試合」ナビゲーション(page-nav ブロック)
+    を再構築する。何度実行しても同じ入力からは同じ結果になる(冪等)。"""
+    entries: list[tuple[Path, dict, str]] = []
+    for f in DOCS_DIR.glob("*.html"):
         if f.name == "index.html":
             continue
         text = f.read_text(encoding="utf-8")
-        title_start = text.find("<title>")
-        title_end = text.find("</title>")
-        title = text[title_start + 7 : title_end] if title_start != -1 else f.stem
-        pages.append((f.name, title))
+        meta = _extract_match_meta(text)
+        if meta is None or meta.get("game_id") is None:
+            continue  # 旧バージョンで生成された(match-metaが無い)ページはナビ対象外
+        entries.append((f, meta, text))
 
-    items = "\n".join(
-        f'    <li><a href="{name}">{title}</a></li>' for name, title in pages
-    )
+    # 開催日時(無ければgame_id)の昇順 → これが前後ナビの基準になる
+    entries.sort(key=lambda e: (e[1].get("kickoff_iso") or "", e[1]["game_id"]))
+
+    for i, (f, _meta, text) in enumerate(entries):
+        prev_meta = entries[i - 1][1] if i > 0 else None
+        next_meta = entries[i + 1][1] if i < len(entries) - 1 else None
+        new_text = _PAGE_NAV_RE.sub(_nav_block_html(prev_meta, next_meta), text, count=1)
+        if new_text != text:
+            f.write_text(new_text, encoding="utf-8")
+
+    # 一覧ページ: 節ごとにグループ化(新しい節が上)、節内は開催日時の昇順
+    by_section: dict[str, list[dict]] = {}
+    for _, meta, _text in entries:
+        by_section.setdefault(meta.get("section") or "節不明", []).append(meta)
+
+    def _section_number(name: str) -> int:
+        m = re.search(r"\d+", name)
+        return int(m.group()) if m else 0
+
+    section_blocks = []
+    for section_name in sorted(by_section.keys(), key=_section_number, reverse=True):
+        metas = sorted(by_section[section_name], key=lambda m: m.get("kickoff_iso") or "")
+        rows = []
+        for meta in metas:
+            home_win = meta["home_score"] > meta["away_score"]
+            away_win = meta["away_score"] > meta["home_score"]
+            home_cls = "win" if home_win else ("lose" if away_win else "")
+            away_cls = "win" if away_win else ("lose" if home_win else "")
+            home_badge = _mini_badge_html(meta["home_short"], meta.get("home_emblem_src"), meta.get("home_color"))
+            away_badge = _mini_badge_html(meta["away_short"], meta.get("away_emblem_src"), meta.get("away_color"))
+            rows.append(
+                f'    <li><a href="{meta["game_id"]}.html">'
+                f'<span class="d">{_format_short_date(meta.get("kickoff_iso"))}</span>'
+                f'<span class="card">{home_badge}<span class="team {home_cls}">{meta["home_short"]}</span>'
+                f'<span class="score">{meta["home_score"]}-{meta["away_score"]}</span>'
+                f'<span class="team {away_cls}">{meta["away_short"]}</span>{away_badge}</span>'
+                f"</a></li>"
+            )
+        section_blocks.append(
+            f'  <section>\n    <h2>{section_name}</h2>\n    <ul>\n' + "\n".join(rows) + "\n    </ul>\n  </section>"
+        )
+
+    body = "\n".join(section_blocks) if section_blocks else "  <p>まだ記事がありません。</p>"
+
     html = f"""<!doctype html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>名古屋グランパス 反応まとめ一覧</title>
+<title>J1 反応まとめ一覧</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>">
 <style>
-  body{{font-family:"Meiryo UI","Meiryo","メイリオ",sans-serif;background:#f6f2ea;color:#241f19;max-width:700px;margin:40px auto;padding:0 20px;}}
-  h1{{font-size:22px;}}
-  ul{{list-style:none;padding:0;}}
-  li{{padding:12px 0;border-bottom:1px solid #ddd3bf;}}
-  a{{color:#8c1d20;text-decoration:none;}}
-  a:hover{{text-decoration:underline;}}
+  :root{{--paper:#f6f2ea;--ink:#241f19;--ink-soft:#6b6153;--line:#ddd3bf;--accent:#8c1d20;}}
+  *{{box-sizing:border-box;}}
+  body{{font-family:"Meiryo UI","Meiryo","メイリオ","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;background:var(--paper);color:var(--ink);max-width:720px;margin:0 auto;padding:40px 20px 80px;}}
+  h1{{font-size:22px;margin:0 0 8px;}}
+  .lead{{font-size:12.5px;color:var(--ink-soft);margin:0 0 32px;}}
+  section{{margin-bottom:32px;}}
+  h2{{font-size:16px;border-left:4px solid var(--accent);padding-left:10px;margin:0 0 10px;}}
+  ul{{list-style:none;padding:0;margin:0;}}
+  li{{border-bottom:1px solid var(--line);}}
+  li a{{display:flex;align-items:center;gap:14px;padding:10px 4px;text-decoration:none;color:var(--ink);}}
+  li a:hover{{background:rgba(140,29,32,.06);}}
+  .d{{flex-shrink:0;width:66px;font-size:11.5px;color:var(--ink-soft);}}
+  .card{{flex:1;display:flex;align-items:center;gap:8px;font-size:14px;}}
+  .mb{{flex-shrink:0;width:22px;height:22px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1);}}
+  .mb img{{width:100%;height:100%;object-fit:cover;}}
+  .team{{flex:1;min-width:0;}}
+  .team.win{{font-weight:700;}}
+  .team.lose{{color:var(--ink-soft);}}
+  .team:last-child{{text-align:right;}}
+  .score{{flex-shrink:0;font-weight:700;font-variant-numeric:tabular-nums;}}
 </style>
 </head>
 <body>
-<h1>名古屋グランパス 反応まとめ一覧</h1>
-<ul>
-{items}
-</ul>
+<h1>J1 反応まとめ一覧</h1>
+<p class="lead">Jリーグ公式サイト・掲示板・5chの反応をもとにClaude APIが自動生成しています。</p>
+{body}
 </body>
 </html>
 """

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【反応まとめ】セレッソ大阪 1-0 清水エスパルス</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>">
+<style>
+  :root{
+    --paper:#f6f2ea;
+    --paper-2:#efe9dc;
+    --ink:#241f19;
+    --ink-soft:#6b6153;
+    --nagoya:#8c1d20;
+    --nagoya-deep:#5c1214;
+    --nagoya-gold:#c8a24a;
+    --shimizu:#e8781f;
+    --shimizu-deep:#b95612;
+    --line:#ddd3bf;
+    --other:#4a5a63;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Meiryo UI","Meiryo","メイリオ","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px;}
+
+  /* page nav (back-link / prev-next) */
+  .page-nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:16px 20px 0;
+    font-size:12.5px;
+    flex-wrap:wrap;
+  }
+  .page-nav a{
+    color:var(--ink-soft);
+    text-decoration:none;
+    border-bottom:1px solid var(--line);
+    padding-bottom:1px;
+  }
+  .page-nav a:hover{color:var(--ink);border-color:var(--ink-soft);}
+  .page-nav-back{font-weight:700;}
+  .page-nav-adjacent{display:flex;gap:16px;flex-wrap:wrap;margin-left:auto;}
+  .page-nav-empty{display:inline-block;}
+
+  /* header / scoreboard */
+  .masthead{
+    padding:38px 20px 0;
+    text-align:center;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.24em;
+    color:var(--ink-soft);
+    font-weight:700;
+  }
+  .wrap > .masthead h1{
+    font-size:26px;
+    font-weight:700;
+    margin:10px 0 26px;
+    line-height:1.6;
+  }
+
+  .scoreboard{
+    background:linear-gradient(180deg,#2a2019,#1b140f);
+    border-radius:6px;
+    padding:26px 18px 22px;
+    color:#f3ead9;
+    box-shadow:0 10px 30px -14px rgba(0,0,0,.5);
+  }
+  .score-meta{
+    font-size:11px;
+    letter-spacing:.14em;
+    color:#c9bda3;
+    margin-bottom:16px;
+  }
+  .score-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+  }
+  .club{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    width:120px;
+  }
+  .badge{
+    width:52px;height:52px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;font-weight:700;color:#fff;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.25),0 1px 4px rgba(0,0,0,.2);
+    flex-shrink:0;
+    overflow:hidden;
+    background:var(--other);
+  }
+  .badge img{width:100%;height:100%;object-fit:cover;display:block;}
+  .badge.mini{width:30px;height:30px;font-size:13px;}
+  .club-name{font-size:13px;font-weight:700;letter-spacing:.04em;}
+  .score-num{
+    font-size:44px;font-weight:700;
+    display:flex;align-items:center;gap:14px;
+  }
+  .score-dash{color:#8f8471;font-size:28px;}
+  .score-goal{font-size:11px;color:#c9bda3;margin-top:2px;}
+
+  /* summary card */
+  .summary{
+    margin-top:26px;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:24px 22px;
+    font-size:15px;
+  }
+  .summary h2{
+    font-size:15px;
+    margin:0 0 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .summary h2::before{
+    content:"";
+    width:14px;height:14px;
+    background:var(--nagoya);
+    display:inline-block;
+    transform:rotate(45deg);
+  }
+  .summary p{margin:0 0 10px;color:#3b352c;}
+  .summary p:last-child{margin-bottom:0;}
+  .summary .cite{font-size:12px;color:var(--ink-soft);margin-top:14px;}
+
+  /* section headers */
+  .section{margin-top:48px;}
+  .section-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .section-head .rule{flex:1;height:1px;background:var(--line);}
+  .section-title{
+    font-size:19px;
+    font-weight:700;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-sub{font-size:12px;color:var(--ink-soft);margin:-10px 0 20px;}
+
+  /* comment cards */
+  .comment{
+    display:flex;
+    gap:12px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .comment:last-child{border-bottom:none;}
+  .comment .who{
+    flex-shrink:0;
+    width:64px;
+    text-align:center;
+  }
+  .comment .who .tag{
+    display:block;
+    font-size:10px;
+    color:var(--ink-soft);
+    margin-top:4px;
+    letter-spacing:.02em;
+  }
+  .comment .body{flex:1;min-width:0;}
+  .comment .meta{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .comment .paraphrase{
+    font-size:14.5px;
+    color:#3b352c;
+    margin-bottom:6px;
+  }
+  .comment .quote{
+    font-size:15.5px;
+    color:var(--ink);
+  }
+  .comment .quote span.line{
+    display:inline;
+  }
+  .comment .quote span.line::before{content:"「";color:var(--ink-soft);}
+  .comment .quote span.line::after{content:"」";color:var(--ink-soft);}
+
+  .badge.nichan{background:linear-gradient(135deg,#6b5b8c,#3f3357);}
+
+  /* X post cards */
+  .xpost{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    display:flex;
+    gap:12px;
+  }
+  .xpost .avatar{
+    width:36px;height:36px;border-radius:50%;
+    background:linear-gradient(135deg,#f3934a,var(--shimizu-deep));
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:13px;font-weight:700;
+  }
+  .xpost .handle{font-size:13px;font-weight:700;}
+  .xpost .at{font-size:12px;color:var(--ink-soft);font-weight:400;margin-left:4px;}
+  .xpost .paraphrase{font-size:13.5px;color:#3b352c;margin-top:4px;}
+  .xpost .quote{font-size:14.5px;margin-top:4px;}
+
+  .footnote{
+    margin-top:20px;
+    background:var(--paper-2);
+    border-left:3px solid var(--nagoya-gold);
+    padding:14px 16px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    border-radius:0 4px 4px 0;
+  }
+
+  .source-note{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:60px;
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:480px){
+    .score-num{font-size:34px;}
+    .club{width:92px;}
+    .badge{width:44px;height:44px;font-size:18px;}
+    .comment{gap:9px;}
+    .comment .who{width:52px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!--PAGE-NAV-START-->
+  <div id="page-nav" class="page-nav">
+    <a class="page-nav-back" href="index.html">← 一覧に戻る</a>
+    <div class="page-nav-adjacent"><a class="page-nav-prev" href="2026082203.html">← 名古屋 3-1 G大阪</a><a class="page-nav-next" href="2026082204.html">→ 京都 1-3 水戸</a></div>
+  </div>
+  <!--PAGE-NAV-END-->
+
+  <div class="masthead">
+    <div class="eyebrow">MATCH REACTION FILE</div>
+    <h1>セレッソ大阪 1-0 清水エスパルス<br>掲示板・Xの反応まとめ</h1>
+  </div>
+
+  <div class="scoreboard">
+    <div class="score-meta">2026.08.22 (SAT) 19:03 KICK OFF ／ 第3節 ／ YANMAR HANASAKA STADIUM ／ 観衆 19,024人</div>
+    <div class="score-row">
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/b0cd70a0b0643349.png" alt="セレッソ大阪"></div>
+        
+        <div class="club-name">セレッソ大阪</div>
+      </div>
+      <div class="score-num">1<span class="score-dash">−</span>0</div>
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/fabacd984a1fd027.png" alt="清水エスパルス"></div>
+        
+        <div class="club-name">清水エスパルス</div>
+      </div>
+    </div>
+    <div class="score-goal">得点：チアゴ アンドラーデ（セ）62&#39;　／　警告・退場：オ セフン、マテウス ブルネッティ（清）　櫻川 ソロモン、畠中 槙之輔（セ）</div>
+  </div>
+
+  <div class="summary">
+    <h2>まとめ</h2>
+    
+    <p>ヤンマーフィールド長居で行われたリーグ第3節、セレッソ大阪と清水エスパルスの一戦は、後半62分にチアゴ アンドラーデが決めた1点をセレッソが守り切り、ホームチームが勝利を収めた。</p>
+    
+    <p>試合を通じて決定機の数では清水が上回っていたとの声も多く、両者の内容と結果が一致していないと感じたファンが少なくなかった。清水は前半途中でオ セフンが警告を受けた後、攻撃の形が作りにくくなったとの指摘が目立ち、彼の穴の大きさが浮き彫りになった印象だ。</p>
+    
+    <p>一方セレッソは、途中出場の助っ人アーバインの活躍が大きな話題を呼んだ。存在感のあるプレーで試合の流れを引き寄せたとの評価が相次ぎ、他クラブサポーターからも高い評価の声が上がった。</p>
+    
+    <p>守護神の好セーブも勝敗を分けた要因として挙げられ、際どい場面を防いだプレーが賞賛される一方、清水サイドではビルドアップの停滞や決定力不足への不満も根強く、今後のチーム作りに対する厳しい視線も向けられている。</p>
+    
+    <div class="cite">出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿</div>
+  </div>
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="badge mini"><img src="assets/emblems/b0cd70a0b0643349.png" alt=""></span>
+        
+        掲示板の反応：C大阪サポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">桜</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント1</div>
+        
+        <div class="quote"><span class="line">やっぱ、チアゴなんよ！</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">桜</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント7</div>
+        
+        <div class="quote"><span class="line">ジャクソン半端ないアーバインヤバい</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">桜</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント22</div>
+        
+        <div class="quote"><span class="line">アーバインは大当たり。まさに助っ人。</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">セ</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント21</div>
+        
+        <div class="quote"><span class="line">ゴール前でノーマーク１対１シュートを防ぐとか、もはや神業だよ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">桜</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント28</div>
+        
+        <div class="quote"><span class="line">まだ落とし込みの段階だけど、
+いつまで我慢出来るのだろうか</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">桜</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント26</div>
+        
+        <div class="quote"><span class="line">結局ソロモンへのロングボール頼みになる</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="badge mini"><img src="assets/emblems/fabacd984a1fd027.png" alt=""></span>
+        
+        掲示板の反応：清水サポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fabacd984a1fd027.png" alt=""></div>
+        
+        <span class="tag">清水</span></div>
+      <div class="body">
+        <div class="meta">コメント3</div>
+        
+        <div class="quote"><span class="line">攻撃の形がない
+梅田が可哀想だわ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fabacd984a1fd027.png" alt=""></div>
+        
+        <span class="tag">清水</span></div>
+      <div class="body">
+        <div class="meta">コメント17</div>
+        
+        <div class="quote"><span class="line">セフンが下がると攻撃の形すら作れないなあ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fabacd984a1fd027.png" alt=""></div>
+        
+        <span class="tag">清水</span></div>
+      <div class="body">
+        <div class="meta">コメント25</div>
+        
+        <div class="quote"><span class="line">決定力があまりになさすぎるしオセフン頼みの戦術変えたほうがいいのでは？</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fabacd984a1fd027.png" alt=""></div>
+        
+        <span class="tag">清水</span></div>
+      <div class="body">
+        <div class="meta">コメント23</div>
+        
+        <div class="quote"><span class="line">複数得点するのとDF陣が複数失点するのどちらが早いかな</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+
+  
+
+  <div class="source-note">
+    出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿<br>
+    試合結果出典：Ｊリーグ公式サイト<br>
+    このページはスクレイピング結果をもとにClaude APIが自動生成したものです。要約・引用は著作権ルール(逐語引用は15語程度・1ソース1回まで)に沿って生成していますが、公開前の確認を推奨します。
+  </div>
+
+</div>
+<script type="application/json" id="match-meta">{"game_id": 2026082205, "section": "第3節", "kickoff_iso": "2026-08-22T10:03:00.000Z", "home_team": "セレッソ大阪", "away_team": "清水エスパルス", "home_score": 1, "away_score": 0, "home_short": "C大阪", "away_short": "清水", "home_emblem_src": "assets/emblems/b0cd70a0b0643349.png", "away_emblem_src": "assets/emblems/fabacd984a1fd027.png", "home_color": "#D0005C", "away_color": "#FF8709", "fan_side": null}</script>
+</body>
+</html>

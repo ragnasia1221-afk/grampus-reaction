@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【反応まとめ】水戸ホーリーホック 1-1 ガンバ大阪</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>">
+<style>
+  :root{
+    --paper:#f6f2ea;
+    --paper-2:#efe9dc;
+    --ink:#241f19;
+    --ink-soft:#6b6153;
+    --nagoya:#8c1d20;
+    --nagoya-deep:#5c1214;
+    --nagoya-gold:#c8a24a;
+    --shimizu:#e8781f;
+    --shimizu-deep:#b95612;
+    --line:#ddd3bf;
+    --other:#4a5a63;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Meiryo UI","Meiryo","メイリオ","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px;}
+
+  /* page nav (back-link / prev-next) */
+  .page-nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:16px 20px 0;
+    font-size:12.5px;
+    flex-wrap:wrap;
+  }
+  .page-nav a{
+    color:var(--ink-soft);
+    text-decoration:none;
+    border-bottom:1px solid var(--line);
+    padding-bottom:1px;
+  }
+  .page-nav a:hover{color:var(--ink);border-color:var(--ink-soft);}
+  .page-nav-back{font-weight:700;}
+  .page-nav-adjacent{display:flex;gap:16px;flex-wrap:wrap;margin-left:auto;}
+  .page-nav-empty{display:inline-block;}
+
+  /* header / scoreboard */
+  .masthead{
+    padding:38px 20px 0;
+    text-align:center;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.24em;
+    color:var(--ink-soft);
+    font-weight:700;
+  }
+  .wrap > .masthead h1{
+    font-size:26px;
+    font-weight:700;
+    margin:10px 0 26px;
+    line-height:1.6;
+  }
+
+  .scoreboard{
+    background:linear-gradient(180deg,#2a2019,#1b140f);
+    border-radius:6px;
+    padding:26px 18px 22px;
+    color:#f3ead9;
+    box-shadow:0 10px 30px -14px rgba(0,0,0,.5);
+  }
+  .score-meta{
+    font-size:11px;
+    letter-spacing:.14em;
+    color:#c9bda3;
+    margin-bottom:16px;
+  }
+  .score-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+  }
+  .club{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    width:120px;
+  }
+  .badge{
+    width:52px;height:52px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;font-weight:700;color:#fff;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.25),0 1px 4px rgba(0,0,0,.2);
+    flex-shrink:0;
+    overflow:hidden;
+    background:var(--other);
+  }
+  .badge img{width:100%;height:100%;object-fit:cover;display:block;}
+  .badge.mini{width:30px;height:30px;font-size:13px;}
+  .club-name{font-size:13px;font-weight:700;letter-spacing:.04em;}
+  .score-num{
+    font-size:44px;font-weight:700;
+    display:flex;align-items:center;gap:14px;
+  }
+  .score-dash{color:#8f8471;font-size:28px;}
+  .score-goal{font-size:11px;color:#c9bda3;margin-top:2px;}
+
+  /* summary card */
+  .summary{
+    margin-top:26px;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:24px 22px;
+    font-size:15px;
+  }
+  .summary h2{
+    font-size:15px;
+    margin:0 0 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .summary h2::before{
+    content:"";
+    width:14px;height:14px;
+    background:var(--nagoya);
+    display:inline-block;
+    transform:rotate(45deg);
+  }
+  .summary p{margin:0 0 10px;color:#3b352c;}
+  .summary p:last-child{margin-bottom:0;}
+  .summary .cite{font-size:12px;color:var(--ink-soft);margin-top:14px;}
+
+  /* section headers */
+  .section{margin-top:48px;}
+  .section-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .section-head .rule{flex:1;height:1px;background:var(--line);}
+  .section-title{
+    font-size:19px;
+    font-weight:700;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-sub{font-size:12px;color:var(--ink-soft);margin:-10px 0 20px;}
+
+  /* comment cards */
+  .comment{
+    display:flex;
+    gap:12px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .comment:last-child{border-bottom:none;}
+  .comment .who{
+    flex-shrink:0;
+    width:64px;
+    text-align:center;
+  }
+  .comment .who .tag{
+    display:block;
+    font-size:10px;
+    color:var(--ink-soft);
+    margin-top:4px;
+    letter-spacing:.02em;
+  }
+  .comment .body{flex:1;min-width:0;}
+  .comment .meta{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .comment .paraphrase{
+    font-size:14.5px;
+    color:#3b352c;
+    margin-bottom:6px;
+  }
+  .comment .quote{
+    font-size:15.5px;
+    color:var(--ink);
+  }
+  .comment .quote span.line{
+    display:inline;
+  }
+  .comment .quote span.line::before{content:"「";color:var(--ink-soft);}
+  .comment .quote span.line::after{content:"」";color:var(--ink-soft);}
+
+  .badge.nichan{background:linear-gradient(135deg,#6b5b8c,#3f3357);}
+
+  /* X post cards */
+  .xpost{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    display:flex;
+    gap:12px;
+  }
+  .xpost .avatar{
+    width:36px;height:36px;border-radius:50%;
+    background:linear-gradient(135deg,#f3934a,var(--shimizu-deep));
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:13px;font-weight:700;
+  }
+  .xpost .handle{font-size:13px;font-weight:700;}
+  .xpost .at{font-size:12px;color:var(--ink-soft);font-weight:400;margin-left:4px;}
+  .xpost .paraphrase{font-size:13.5px;color:#3b352c;margin-top:4px;}
+  .xpost .quote{font-size:14.5px;margin-top:4px;}
+
+  .footnote{
+    margin-top:20px;
+    background:var(--paper-2);
+    border-left:3px solid var(--nagoya-gold);
+    padding:14px 16px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    border-radius:0 4px 4px 0;
+  }
+
+  .source-note{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:60px;
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:480px){
+    .score-num{font-size:34px;}
+    .club{width:92px;}
+    .badge{width:44px;height:44px;font-size:18px;}
+    .comment{gap:9px;}
+    .comment .who{width:52px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!--PAGE-NAV-START-->
+  <div id="page-nav" class="page-nav">
+    <a class="page-nav-back" href="index.html">← 一覧に戻る</a>
+    <div class="page-nav-adjacent"><a class="page-nav-prev" href="2026081501.html">← 鹿島 2-1 名古屋</a><a class="page-nav-next" href="2026081503.html">→ 清水 0-1 横浜FM</a></div>
+  </div>
+  <!--PAGE-NAV-END-->
+
+  <div class="masthead">
+    <div class="eyebrow">MATCH REACTION FILE</div>
+    <h1>水戸ホーリーホック 1-1 ガンバ大阪<br>掲示板・Xの反応まとめ</h1>
+  </div>
+
+  <div class="scoreboard">
+    <div class="score-meta">2026.08.15 (SAT) 18:03 KICK OFF ／ 第2節 ／ 水戸信用金庫スタジアム ／ 観衆 13,226人</div>
+    <div class="score-row">
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/db08d45c03321514.png" alt="水戸ホーリーホック"></div>
+        
+        <div class="club-name">水戸ホーリーホック</div>
+      </div>
+      <div class="score-num">1<span class="score-dash">−</span>1</div>
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/3d71333ba425d278.png" alt="ガンバ大阪"></div>
+        
+        <div class="club-name">ガンバ大阪</div>
+      </div>
+    </div>
+    <div class="score-goal">得点：鳥海 芳樹（水）18&#39;、中谷 進之介（ガ）74&#39;　／　警告・退場：山本 隼大（水）</div>
+  </div>
+
+  <div class="summary">
+    <h2>まとめ</h2>
+    
+    <p>第2節、水戸ホーリーホックはホームの水戸信用金庫スタジアムでガンバ大阪を迎えた。前半18分に鳥海芳樹が先制点を挙げて水戸がリードする展開となったが、後半74分にガンバの中谷進之介がCKからヘディングで同点に追いつき、試合は1-1のドローで幕を閉じた。</p>
+    
+    <p>水戸にとってはJ1の舞台での歴史的な勝ち点となった一戦。試合内容としては決定機を多く作りながらも決めきれない、いつも通りの惜しい展開になったとの声も見られた。一方のガンバ大阪はACLでの連戦や中3日というコンディション面のハンデを抱えながらの試合で、前半は精彩を欠く場面が目立ったものの、後半の選手交代を機にチーム状態が上向き、逆転こそならなかったものの追いついての勝ち点1獲得となった。</p>
+    
+    <p>両サポーターの反応では、それぞれのチーム事情を踏まえた分析や采配への意見が飛び交った。ガンバサポーターの間では采配や選手起用に賛否が分かれ、明神采配への評価も割れる形に。水戸サイドでは選手交代の意図に疑問を呈する声や、運営面でのトラブルに関する話題も見られた。試合終了後、山本隼大が警告を受けるなど、終盤までしびれる展開となった一戦だった。</p>
+    
+    <div class="cite">出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿</div>
+  </div>
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="badge mini"><img src="assets/emblems/db08d45c03321514.png" alt=""></span>
+        
+        掲示板の反応：水戸サポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/db08d45c03321514.png" alt=""></div>
+        
+        <span class="tag">水戸</span></div>
+      <div class="body">
+        <div class="meta">コメント22</div>
+        
+        <div class="quote"><span class="line">山本と多田は位置逆だよなあ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/db08d45c03321514.png" alt=""></div>
+        
+        <span class="tag">水戸</span></div>
+      <div class="body">
+        <div class="meta">コメント30</div>
+        
+        <div class="quote"><span class="line">価値より問題の方が大きいぞ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">葵</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント35</div>
+        
+        <div class="quote"><span class="line">最後の最後で守り切る力と、最後の最後でゴールを奪う力が弱い</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">脚</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント25</div>
+        
+        <div class="quote"><span class="line">決定力あったらボコれたのに勿体なかった</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">脚</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント6</div>
+        
+        <div class="quote"><span class="line">まじで明神意味が分からん</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">名</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント7</div>
+        
+        <div class="quote"><span class="line">一人だけ意味わからん動きとポジショニングしてる</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">脚</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント16</div>
+        
+        <div class="quote"><span class="line">メディカルの判断で出場時間が制限されてるだけ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">脚</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント32</div>
+        
+        <div class="quote"><span class="line">インテリジェンスの塊になるとは</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">名</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント23</div>
+        
+        <div class="quote"><span class="line">水戸がJ１に上がったのを再実感した</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">脚</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント20</div>
+        
+        <div class="quote"><span class="line">歴史的勝ち点オメ</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">試合後：Xの反応</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="xpost">
+      <div class="avatar">い</div>
+      <div class="body">
+        <div><span class="handle">いわいわ</span><span class="at">@1wa1wa</span></div>
+        <div class="paraphrase">厳しい状況下で敗戦を免れたことに安堵する短いコメント。</div>
+        <div class="quote"><span class="line">ガンバ負けなくて良かったな。</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">7</div>
+      <div class="body">
+        <div><span class="handle">7式 Johnny</span><span class="at">@7John_Doe</span></div>
+        <div class="paraphrase">新監督の采配が交代選手によって好転し、CKから主将のヘディングで追いついたと分析。前半の出来を踏まえれば勝ち点1は納得の結果だとの見解。</div>
+        <div class="quote"><span class="line">勝点1は妥当かも</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">K</div>
+      <div class="body">
+        <div><span class="handle">KYuichiro</span><span class="at">@leavolo</span></div>
+        <div class="paraphrase">後半の修正力はあるものの、監督としての采配の振れ幅が大きすぎるとして、指揮官交代を望む厳しい声。</div>
+        <div class="quote"><span class="line">監督は交代してくれ</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">廣</div>
+      <div class="body">
+        <div><span class="handle">廣岡祐次 ／株式会社ハイド&amp;ルーク 代表取締役／PRSJ認定PRプランナー</span><span class="at">@54yuzy</span></div>
+        <div class="paraphrase">良い部分も多く見られた中での貴重なJ1初勝ち点だったとし、相手の投入選手に押し込まれたことや、決定機を決めきれなかった点、そしてゴールキーパーの奮闘を労うコメント。</div>
+        <div class="quote"><span class="line">薄氷のJ1初勝ち点</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">つ</div>
+      <div class="body">
+        <div><span class="handle">つここ@ガンバサポ&amp;看護師</span><span class="at">@atmytt</span></div>
+        <div class="paraphrase">延長戦があれば逆転できていたかもと思うほど後半は持ち直し、前半の苦しい内容から一転してホッとしたとの感想。アウェイでも変わらぬ声援に感謝する声。</div>
+        <div class="quote"><span class="line">正直前半だけならヤバかったと思う</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">ウ</div>
+      <div class="body">
+        <div><span class="handle">ウエハラヒデアキ</span><span class="at">@uehara90210</span></div>
+        <div class="paraphrase">開幕戦としての観客動員数がもう少し欲しかったとしつつ、1万人超えを維持できれば成功だとする冷静な視点からの意見。</div>
+        <div class="quote"><span class="line">最低でも1.5は欲しかったね</span></div>
+      </div>
+    </div>
+    
+  </div>
+  
+
+  <div class="source-note">
+    出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿<br>
+    試合結果出典：Ｊリーグ公式サイト<br>
+    このページはスクレイピング結果をもとにClaude APIが自動生成したものです。要約・引用は著作権ルール(逐語引用は15語程度・1ソース1回まで)に沿って生成していますが、公開前の確認を推奨します。
+  </div>
+
+</div>
+<script type="application/json" id="match-meta">{"game_id": 2026081502, "section": "第2節", "kickoff_iso": "2026-08-15T09:03:00.000Z", "home_team": "水戸ホーリーホック", "away_team": "ガンバ大阪", "home_score": 1, "away_score": 1, "home_short": "水戸", "away_short": "G大阪", "home_emblem_src": "assets/emblems/db08d45c03321514.png", "away_emblem_src": "assets/emblems/3d71333ba425d278.png", "home_color": "#1D2088", "away_color": "#003287", "fan_side": null}</script>
+</body>
+</html>

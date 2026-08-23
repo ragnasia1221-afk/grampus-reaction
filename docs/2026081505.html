@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【反応まとめ】浦和レッズ 1-4 サンフレッチェ広島</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>">
+<style>
+  :root{
+    --paper:#f6f2ea;
+    --paper-2:#efe9dc;
+    --ink:#241f19;
+    --ink-soft:#6b6153;
+    --nagoya:#8c1d20;
+    --nagoya-deep:#5c1214;
+    --nagoya-gold:#c8a24a;
+    --shimizu:#e8781f;
+    --shimizu-deep:#b95612;
+    --line:#ddd3bf;
+    --other:#4a5a63;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Meiryo UI","Meiryo","メイリオ","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px;}
+
+  /* page nav (back-link / prev-next) */
+  .page-nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:16px 20px 0;
+    font-size:12.5px;
+    flex-wrap:wrap;
+  }
+  .page-nav a{
+    color:var(--ink-soft);
+    text-decoration:none;
+    border-bottom:1px solid var(--line);
+    padding-bottom:1px;
+  }
+  .page-nav a:hover{color:var(--ink);border-color:var(--ink-soft);}
+  .page-nav-back{font-weight:700;}
+  .page-nav-adjacent{display:flex;gap:16px;flex-wrap:wrap;margin-left:auto;}
+  .page-nav-empty{display:inline-block;}
+
+  /* header / scoreboard */
+  .masthead{
+    padding:38px 20px 0;
+    text-align:center;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.24em;
+    color:var(--ink-soft);
+    font-weight:700;
+  }
+  .wrap > .masthead h1{
+    font-size:26px;
+    font-weight:700;
+    margin:10px 0 26px;
+    line-height:1.6;
+  }
+
+  .scoreboard{
+    background:linear-gradient(180deg,#2a2019,#1b140f);
+    border-radius:6px;
+    padding:26px 18px 22px;
+    color:#f3ead9;
+    box-shadow:0 10px 30px -14px rgba(0,0,0,.5);
+  }
+  .score-meta{
+    font-size:11px;
+    letter-spacing:.14em;
+    color:#c9bda3;
+    margin-bottom:16px;
+  }
+  .score-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+  }
+  .club{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    width:120px;
+  }
+  .badge{
+    width:52px;height:52px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;font-weight:700;color:#fff;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.25),0 1px 4px rgba(0,0,0,.2);
+    flex-shrink:0;
+    overflow:hidden;
+    background:var(--other);
+  }
+  .badge img{width:100%;height:100%;object-fit:cover;display:block;}
+  .badge.mini{width:30px;height:30px;font-size:13px;}
+  .club-name{font-size:13px;font-weight:700;letter-spacing:.04em;}
+  .score-num{
+    font-size:44px;font-weight:700;
+    display:flex;align-items:center;gap:14px;
+  }
+  .score-dash{color:#8f8471;font-size:28px;}
+  .score-goal{font-size:11px;color:#c9bda3;margin-top:2px;}
+
+  /* summary card */
+  .summary{
+    margin-top:26px;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:24px 22px;
+    font-size:15px;
+  }
+  .summary h2{
+    font-size:15px;
+    margin:0 0 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .summary h2::before{
+    content:"";
+    width:14px;height:14px;
+    background:var(--nagoya);
+    display:inline-block;
+    transform:rotate(45deg);
+  }
+  .summary p{margin:0 0 10px;color:#3b352c;}
+  .summary p:last-child{margin-bottom:0;}
+  .summary .cite{font-size:12px;color:var(--ink-soft);margin-top:14px;}
+
+  /* section headers */
+  .section{margin-top:48px;}
+  .section-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .section-head .rule{flex:1;height:1px;background:var(--line);}
+  .section-title{
+    font-size:19px;
+    font-weight:700;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-sub{font-size:12px;color:var(--ink-soft);margin:-10px 0 20px;}
+
+  /* comment cards */
+  .comment{
+    display:flex;
+    gap:12px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .comment:last-child{border-bottom:none;}
+  .comment .who{
+    flex-shrink:0;
+    width:64px;
+    text-align:center;
+  }
+  .comment .who .tag{
+    display:block;
+    font-size:10px;
+    color:var(--ink-soft);
+    margin-top:4px;
+    letter-spacing:.02em;
+  }
+  .comment .body{flex:1;min-width:0;}
+  .comment .meta{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .comment .paraphrase{
+    font-size:14.5px;
+    color:#3b352c;
+    margin-bottom:6px;
+  }
+  .comment .quote{
+    font-size:15.5px;
+    color:var(--ink);
+  }
+  .comment .quote span.line{
+    display:inline;
+  }
+  .comment .quote span.line::before{content:"「";color:var(--ink-soft);}
+  .comment .quote span.line::after{content:"」";color:var(--ink-soft);}
+
+  .badge.nichan{background:linear-gradient(135deg,#6b5b8c,#3f3357);}
+
+  /* X post cards */
+  .xpost{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    display:flex;
+    gap:12px;
+  }
+  .xpost .avatar{
+    width:36px;height:36px;border-radius:50%;
+    background:linear-gradient(135deg,#f3934a,var(--shimizu-deep));
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:13px;font-weight:700;
+  }
+  .xpost .handle{font-size:13px;font-weight:700;}
+  .xpost .at{font-size:12px;color:var(--ink-soft);font-weight:400;margin-left:4px;}
+  .xpost .paraphrase{font-size:13.5px;color:#3b352c;margin-top:4px;}
+  .xpost .quote{font-size:14.5px;margin-top:4px;}
+
+  .footnote{
+    margin-top:20px;
+    background:var(--paper-2);
+    border-left:3px solid var(--nagoya-gold);
+    padding:14px 16px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    border-radius:0 4px 4px 0;
+  }
+
+  .source-note{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:60px;
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:480px){
+    .score-num{font-size:34px;}
+    .club{width:92px;}
+    .badge{width:44px;height:44px;font-size:18px;}
+    .comment{gap:9px;}
+    .comment .who{width:52px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!--PAGE-NAV-START-->
+  <div id="page-nav" class="page-nav">
+    <a class="page-nav-back" href="index.html">← 一覧に戻る</a>
+    <div class="page-nav-adjacent"><a class="page-nav-prev" href="2026081509.html">← 福岡 3-0 C大阪</a><a class="page-nav-next" href="2026081506.html">→ 千葉 0-4 町田</a></div>
+  </div>
+  <!--PAGE-NAV-END-->
+
+  <div class="masthead">
+    <div class="eyebrow">MATCH REACTION FILE</div>
+    <h1>浦和レッズ 1-4 サンフレッチェ広島<br>掲示板・Xの反応まとめ</h1>
+  </div>
+
+  <div class="scoreboard">
+    <div class="score-meta">2026.08.15 (SAT) 19:04 KICK OFF ／ 第2節 ／ 埼玉スタジアム２００２ ／ 観衆 48,707人</div>
+    <div class="score-row">
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/24e21960ff47af2f.png" alt="浦和レッズ"></div>
+        
+        <div class="club-name">浦和レッズ</div>
+      </div>
+      <div class="score-num">1<span class="score-dash">−</span>4</div>
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/c0a7aaa1d2720727.png" alt="サンフレッチェ広島"></div>
+        
+        <div class="club-name">サンフレッチェ広島</div>
+      </div>
+    </div>
+    <div class="score-goal">得点：鈴木 章斗（サ）16&#39;、荒木 隼人（浦）22&#39;、塩谷 司（サ）45+2&#39;、セバスティアン アレー（サ）61&#39;、鈴木 章斗（サ）75&#39;　／　警告・退場：鈴木 章斗（サ）　工藤 孝太、宮本 優太（浦）</div>
+  </div>
+
+  <div class="summary">
+    <h2>まとめ</h2>
+    
+    <p>埼玉スタジアム2002で行われた第2節、浦和レッズはホームでサンフレッチェ広島を迎えたが、1-4という大差で敗れた。前半16分に鈴木章斗が先制すると、22分には荒木隼人のオウンゴールで追加点。さらにアディショナルタイムには塩谷司が加点し、前半だけで3点のリードを許す展開となった。</p>
+    
+    <p>後半に入っても広島の勢いは止まらず、61分にセバスティアン アレーが今季初ゴールを記録、75分には鈴木章斗が2点目を挙げてこの日2得点とし、試合を決定づけた。浦和は工藤孝太や宮本優太が警告を受けるなど守備面で苦しみ、シュート数やコーナーキックの数字でも広島に大きく水をあけられる完敗となった。</p>
+    
+    <p>試合後のファンの反応は多岐にわたった。広島サポーターからは新加入のアレーの存在感や塩谷の安定感を称える声が相次ぎ、チームの完成度の高さを喜ぶ投稿が目立った。一方、浦和サポーターやその他クラブのファンからは守備組織の崩壊やGK起用への疑問、指揮官の采配に対する厳しい意見が多く上がり、今後のシーズンを不安視する声も少なくなかった。</p>
+    
+    <div class="cite">出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿</div>
+  </div>
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="badge mini"><img src="assets/emblems/24e21960ff47af2f.png" alt=""></span>
+        
+        掲示板の反応：浦和サポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">熊</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント10</div>
+        
+        <div class="quote"><span class="line">アレーはたこ焼きと相性が良いのでは</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">熊</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント41</div>
+        
+        <div class="quote"><span class="line">ポストうますぎる</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">名</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント45</div>
+        
+        <div class="quote"><span class="line">ちょっとつついたら奪える</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">熊</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント132</div>
+        
+        <div class="quote"><span class="line">そうそうおらんぞあんな選手</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">名</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント53</div>
+        
+        <div class="quote"><span class="line">後半のサンドバッグ状態は絶望的だった</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">名</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント127</div>
+        
+        <div class="quote"><span class="line">CBが後ろ向いて走るシーンが連発</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">赤</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント121</div>
+        
+        <div class="quote"><span class="line">一対一の差は圧倒的だった</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">熊</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント100</div>
+        
+        <div class="quote"><span class="line">周作だから、４点で済んでる</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">名</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント60</div>
+        
+        <div class="quote"><span class="line">決定力はまだまだで当然でしょうよ</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="badge mini"><img src="assets/emblems/c0a7aaa1d2720727.png" alt=""></span>
+        
+        掲示板の反応：広島サポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/c0a7aaa1d2720727.png" alt=""></div>
+        
+        <span class="tag">広島</span></div>
+      <div class="body">
+        <div class="meta">コメント32</div>
+        
+        <div class="quote"><span class="line">限界までやってくれ</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">試合後：Xの反応</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="xpost">
+      <div class="avatar">麦</div>
+      <div class="body">
+        <div><span class="handle">麦星</span><span class="at">@z_masaki</span></div>
+        <div class="paraphrase">完勝を喜び、試合を通じて主導権を握れていたことに満足する広島サポーターの投稿。</div>
+        <div class="quote"><span class="line">圧倒した。</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">y</div>
+      <div class="body">
+        <div><span class="handle">yk@acone</span><span class="at">@yk_acone</span></div>
+        <div class="paraphrase">新加入FWのレベルの高さに驚き、過去の名助っ人と並ぶ存在になり得るとの期待を寄せる投稿。</div>
+        <div class="quote"><span class="line">このレベルの外国人ってドウグラス以来じゃないか</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">s</div>
+      <div class="body">
+        <div><span class="handle">show</span><span class="at">@show_SHIGUMA</span></div>
+        <div class="paraphrase">浦和相手にここまで隙のない試合ができたのは初めてではないかと驚きつつ、終盤は余裕を持って見守れたと振り返る投稿。</div>
+        <div class="quote"><span class="line">途中から安心して見てたし</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">波</div>
+      <div class="body">
+        <div><span class="handle">波田 健一(KEN HADA 気象予報士)</span><span class="at">@hadaken69</span></div>
+        <div class="paraphrase">スコア以上に内容面で完勝だったと分析し、新加入選手の活躍など収穫の多い試合だったと総括する投稿。</div>
+        <div class="quote"><span class="line">レッズにほぼなにもさせなかった素晴らしいゲーム</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">け</div>
+      <div class="body">
+        <div><span class="handle">けいたろー</span><span class="at">@keikei4418</span></div>
+        <div class="paraphrase">苦手にしていたスタジアムでの久々の勝利を喜び、今の好調な流れを継続していきたいとする投稿。</div>
+        <div class="quote"><span class="line">見事な4発、アレーの初ゴールも生まれる</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">お</div>
+      <div class="body">
+        <div><span class="handle">おいおいやあやあ</span><span class="at">@hidamarble210</span></div>
+        <div class="paraphrase">対戦相手として広島の強さを目の当たりにし、思わず身構えてしまったという率直な感想を述べる投稿。</div>
+        <div class="quote"><span class="line">え？サンフレッチェ強くないですか</span></div>
+      </div>
+    </div>
+    
+  </div>
+  
+
+  <div class="source-note">
+    出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿<br>
+    試合結果出典：Ｊリーグ公式サイト<br>
+    このページはスクレイピング結果をもとにClaude APIが自動生成したものです。要約・引用は著作権ルール(逐語引用は15語程度・1ソース1回まで)に沿って生成していますが、公開前の確認を推奨します。
+  </div>
+
+</div>
+<script type="application/json" id="match-meta">{"game_id": 2026081505, "section": "第2節", "kickoff_iso": "2026-08-15T10:04:00.000Z", "home_team": "浦和レッズ", "away_team": "サンフレッチェ広島", "home_score": 1, "away_score": 4, "home_short": "浦和", "away_short": "広島", "home_emblem_src": "assets/emblems/24e21960ff47af2f.png", "away_emblem_src": "assets/emblems/c0a7aaa1d2720727.png", "home_color": "#ED1A3B", "away_color": "#583F99", "fan_side": null}</script>
+</body>
+</html>

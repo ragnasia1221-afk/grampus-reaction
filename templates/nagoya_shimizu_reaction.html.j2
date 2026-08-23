@@ -305,7 +305,8 @@
   <div class="section">
     <div class="section-head">
       <div class="section-title">
-        <span class="badge mini" style="background:{{ home_color }}">{{ home_badge_letter }}</span>
+        {% if home_emblem_src %}<span class="badge mini"><img src="{{ home_emblem_src }}" alt=""></span>
+        {% else %}<span class="badge mini" style="background:{{ home_color }}">{{ home_badge_letter }}</span>{% endif %}
         {{ home_section_title }}</div>
       <div class="rule"></div>
     </div>
@@ -334,7 +335,8 @@
   <div class="section">
     <div class="section-head">
       <div class="section-title">
-        <span class="badge mini" style="background:{{ away_color }}">{{ away_badge_letter }}</span>
+        {% if away_emblem_src %}<span class="badge mini"><img src="{{ away_emblem_src }}" alt=""></span>
+        {% else %}<span class="badge mini" style="background:{{ away_color }}">{{ away_badge_letter }}</span>{% endif %}
         {{ away_section_title }}</div>
       <div class="rule"></div>
     </div>

@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import json
+import re
 import unicodedata
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -117,6 +118,49 @@ def _club_one_char(team_name: str) -> str:
     """バッジに使う一文字表記。未登録のクラブはチーム名の先頭一文字にフォールバックする。"""
     normalized = unicodedata.normalize("NFKC", team_name)
     return _CLUB_ONE_CHAR_NORMALIZED.get(normalized, team_name[0])
+
+
+# 一文字 → クラブ名 の逆引き(「他クラブ」コメントの識別用)。
+# CLUB_ONE_CHARの値はクラブごとに重複しないので単純な逆引きで作れる。
+_ONE_CHAR_TO_CLUB = {char: name for name, char in CLUB_ONE_CHAR.items()}
+
+_MATCH_META_RE = re.compile(
+    r'<script type="application/json" id="match-meta">(.*?)</script>', re.S
+)
+_club_color_cache: dict[str, str] | None = None
+
+
+def _club_color_reference() -> dict[str, str]:
+    """docs/配下の全試合ページのmatch-metaから「クラブ名(NFKC正規化) → クラブカラー」の
+    対応表を作る。「他クラブ」コメントを一文字表記からクラブ特定できた場合に、
+    (今回の対戦カードには含まれない)そのクラブの実際の色をバッジに使うためのもの。
+    プロセス内で一度だけ読み込んでキャッシュする。"""
+    global _club_color_cache
+    if _club_color_cache is not None:
+        return _club_color_cache
+    colors: dict[str, str] = {}
+    if DOCS_DIR.exists():
+        for f in DOCS_DIR.glob("*.html"):
+            if f.name == "index.html":
+                continue
+            try:
+                text = f.read_text(encoding="utf-8")
+            except OSError:
+                continue
+            m = _MATCH_META_RE.search(text)
+            if not m:
+                continue
+            try:
+                meta = json.loads(m.group(1))
+            except json.JSONDecodeError:
+                continue
+            for side in ("home", "away"):
+                name = meta.get(f"{side}_team")
+                color = meta.get(f"{side}_color")
+                if name and color:
+                    colors[unicodedata.normalize("NFKC", name)] = color
+    _club_color_cache = colors
+    return colors
 
 
 def _format_kickoff(kickoff_iso: str | None) -> str:
@@ -228,9 +272,7 @@ def build_context(
                 "number": source.get("number"),
                 "badge_letter": home_badge_letter,
                 "badge_color": home_color,
-                # コメント欄のバッジはクラブ一文字表記(CLUB_ONE_CHAR)を使いたいので、
-                # あえてエンブレム画像は使わない(エンブレムはスコアボードのみ)。
-                "emblem_src": None,
+                "emblem_src": home_emblem_src,
                 "tag_label": home_short,
             }
             home_comments.append(entry)
@@ -240,7 +282,7 @@ def build_context(
                 "number": source.get("number"),
                 "badge_letter": away_badge_letter,
                 "badge_color": away_color,
-                "emblem_src": None,
+                "emblem_src": away_emblem_src,
                 "tag_label": away_short,
             }
             away_comments.append(entry)
@@ -248,14 +290,24 @@ def build_context(
             raw_tag = (source.get("team_tag") or "他").strip()
             if _is_anonymous_name(raw_tag):
                 badge_letter = ANONYMOUS_BADGE_ICON
+                badge_color = None
             else:
                 badge_letter = raw_tag[0] if raw_tag else "他"
+                # 一文字表記(CLUB_ONE_CHAR)から他クラブを特定できた場合は、そのクラブの
+                # 実際のクラブカラーをバッジに使う(追加ルール)。特定できなければ
+                # Noneのままテンプレート側でCSSの--other(グレー)にフォールバックする。
+                other_club = _ONE_CHAR_TO_CLUB.get(badge_letter)
+                badge_color = None
+                if other_club:
+                    badge_color = _club_color_reference().get(
+                        unicodedata.normalize("NFKC", other_club)
+                    )
             entry = {
                 **pick,
                 "number": source.get("number"),
                 "badge_letter": badge_letter,
-                "badge_color": None,  # Noneならテンプレート側でCSSの--otherを使う
-                "emblem_src": None,  # 他クラブは特定できないためエンブレム無し
+                "badge_color": badge_color,
+                "emblem_src": None,  # 他クラブはエンブレム画像を使わない(色付けのみ)
                 "tag_label": "他クラブ",
             }
             home_comments.append(entry)  # テンプレート原案どおり、他クラブ視点は名古屋側セクションに混ぜる

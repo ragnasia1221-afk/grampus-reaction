@@ -30,6 +30,10 @@ EMBLEM_ASSETS_DIR = DOCS_DIR / "assets" / "emblems"
 FALLBACK_HOME_COLOR = "#8c1d20"
 FALLBACK_AWAY_COLOR = "#e8781f"
 
+# 名前が取れない(匿名)投稿者向けの汎用バッジ文字。「名無しさん」の頭文字「名」を
+# そのままバッジに出すとクラブ略称と紛らわしいため、これに差し替える。
+ANONYMOUS_BADGE_ICON = "👤"
+
 JST = timezone(timedelta(hours=9))
 WEEKDAY_JA = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
 
@@ -75,6 +79,46 @@ def _team_short(team_name: str) -> str:
     return _TEAM_SHORT_NAMES_NORMALIZED.get(normalized, team_name[:2])
 
 
+# 5ch/2ch・ファンサカ2ch辞典等で使われている、各クラブの一文字表記。バッジの文字に使う。
+# マスコット/クラブカラー/クラブ名由来など出典がはっきりしていて角の立たないものだけを採用し、
+# 蔑称や由来不明なものは避けている(2026-08-14 ユーザーと相談のうえ決定)。
+# 由来が2文字以上のもの(柏レイソル「木白」、FC東京「瓦斯」、川崎フロンターレ「海豚」)は
+# 一文字表記のルールに揃えるため、チーム名由来の一文字に置き換えている。
+# 参考: https://w.atwiki.jp/fantasy_soccer/pages/12.html (ファンサカ2ch辞典)
+CLUB_ONE_CHAR: dict[str, str] = {
+    "名古屋グランパス": "鯱",  # grampus(グランパス)はシャチの意味
+    "サンフレッチェ広島": "熊",  # クマのマスコットより
+    "横浜F・マリノス": "鞠",  # marinos の「マリ」より
+    "セレッソ大阪": "桜",  # cerezo(セレッソ)は桜の意味
+    "アビスパ福岡": "蜂",  # avispa(アビスパ)は蜂の意味
+    "鹿島アントラーズ": "鹿",  # 鹿島の頭文字 + antler(鹿の角)
+    "東京ヴェルディ": "緑",  # 定番のクラブカラー
+    "浦和レッズ": "赤",  # クラブカラー
+    "清水エスパルス": "橙",  # クラブカラー
+    "京都サンガF.C.": "紫",  # 旧称パープルサンガのクラブカラー
+    "ヴィッセル神戸": "牛",  # 神戸牛ネタ
+    "ガンバ大阪": "脚",
+    "ジェフユナイテッド千葉": "犬",
+    "柏レイソル": "柏",
+    "FC東京": "東",
+    "川崎フロンターレ": "川",
+    "水戸ホーリーホック": "水",  # 該当スラング無し、地名からのフォールバック
+    "ファジアーノ岡山": "岡",  # 同上
+    "FC町田ゼルビア": "町",  # 同上
+    "V・ファーレン長崎": "長",  # 同上(ファンサカ2ch辞典でも「未定」)
+}
+
+_CLUB_ONE_CHAR_NORMALIZED = {
+    unicodedata.normalize("NFKC", name): char for name, char in CLUB_ONE_CHAR.items()
+}
+
+
+def _club_one_char(team_name: str) -> str:
+    """バッジに使う一文字表記。未登録のクラブはチーム名の先頭一文字にフォールバックする。"""
+    normalized = unicodedata.normalize("NFKC", team_name)
+    return _CLUB_ONE_CHAR_NORMALIZED.get(normalized, team_name[0])
+
+
 def _format_kickoff(kickoff_iso: str | None) -> str:
     if not kickoff_iso:
         return ""
@@ -110,6 +154,14 @@ def _build_score_goal_line(match: dict) -> str:
     return f"得点：{goals_text}　／　警告・退場：{cards_text}"
 
 
+def _is_anonymous_name(name: str) -> bool:
+    """ドメサカブログのコメント欄は「名無しさん」がデフォルトのタグ名で、
+    これをそのまま先頭一文字だけ取り出すと「名」という紛らわしいバッジ文字になってしまう
+    (クラブの略称と誤解される)。「名無し」で始まる場合は名前ではなく「未設定」の意味なので、
+    バッジには文字ではなく汎用の人物アイコンを使う。"""
+    return name.strip().startswith("名無し")
+
+
 def _blog_source_name(url: str) -> str:
     if "domesoccer" in url:
         return "ドメサカブログ"
@@ -126,8 +178,8 @@ def build_context(
 ) -> dict:
     home_short = _team_short(match["home_team"])
     away_short = _team_short(match["away_team"])
-    home_badge_letter = match["home_team"][0]
-    away_badge_letter = match["away_team"][0]
+    home_badge_letter = _club_one_char(match["home_team"])
+    away_badge_letter = _club_one_char(match["away_team"])
 
     # クラブエンブレム画像切り出し + クラブカラー取得。
     # スプライト画像のダウンロード等に失敗した場合はNoneを返す設計なので、
@@ -176,7 +228,9 @@ def build_context(
                 "number": source.get("number"),
                 "badge_letter": home_badge_letter,
                 "badge_color": home_color,
-                "emblem_src": home_emblem_src,
+                # コメント欄のバッジはクラブ一文字表記(CLUB_ONE_CHAR)を使いたいので、
+                # あえてエンブレム画像は使わない(エンブレムはスコアボードのみ)。
+                "emblem_src": None,
                 "tag_label": home_short,
             }
             home_comments.append(entry)
@@ -186,16 +240,20 @@ def build_context(
                 "number": source.get("number"),
                 "badge_letter": away_badge_letter,
                 "badge_color": away_color,
-                "emblem_src": away_emblem_src,
+                "emblem_src": None,
                 "tag_label": away_short,
             }
             away_comments.append(entry)
         else:  # other
             raw_tag = (source.get("team_tag") or "他").strip()
+            if _is_anonymous_name(raw_tag):
+                badge_letter = ANONYMOUS_BADGE_ICON
+            else:
+                badge_letter = raw_tag[0] if raw_tag else "他"
             entry = {
                 **pick,
                 "number": source.get("number"),
-                "badge_letter": raw_tag[0] if raw_tag else "他",
+                "badge_letter": badge_letter,
                 "badge_color": None,  # Noneならテンプレート側でCSSの--otherを使う
                 "emblem_src": None,  # 他クラブは特定できないためエンブレム無し
                 "tag_label": "他クラブ",
@@ -208,12 +266,16 @@ def build_context(
         if source is None:
             continue
         author_name = source.get("author_name") or source.get("handle") or "?"
+        if _is_anonymous_name(author_name):
+            avatar_letter = ANONYMOUS_BADGE_ICON
+        else:
+            avatar_letter = author_name[0] if author_name else "?"
         tweets.append(
             {
                 **pick,
                 "author_name": author_name,
                 "handle": source.get("handle", ""),
-                "avatar_letter": author_name[0] if author_name else "?",
+                "avatar_letter": avatar_letter,
             }
         )
 

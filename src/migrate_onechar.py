@@ -39,16 +39,19 @@ _MATCH_META_RE = re.compile(
     r'<script type="application/json" id="match-meta">(.*?)</script>', re.S
 )
 
-# 「他クラブ」コメントのバッジ: <div class="who"><div class="badge mini other">X</div>
+# 「他クラブ」コメントのバッジ: <div class="who"><div class="badge mini ...">X</div>
 # <span class="tag">他クラブ</span></div> ... <div class="meta">コメント{N}</div>
 # という並びから、バッジ文字Xとコメント番号Nを両方とも取り出す。
-# ("badge mini other" は旧テンプレート由来のCSSクラス名で、現行スタイルシートには
-#  対応する.badge.otherルールは無いが、.badgeの既定背景色(--other)がそのまま効くため
-#  表示上は問題ない。ここでは中身の文字だけを差し替える)
+# テンプレートの版によって2種類の書式が混在しているため両方に対応する:
+#  - 旧: <div class="badge mini other">X</div> (改行無し、最初期のテンプレート)
+#  - 新: <div class="badge mini" style="background:var(--other)">X</div> (前回セッションの
+#        エンブレム対応テンプレート、改行・インデント入り)
 _OTHER_BADGE_RE = re.compile(
-    r'(<div class="who"><div class="badge mini other">)'
+    r'(<div class="who">\s*'
+    r'(?:<div class="badge mini other">'
+    r'|<div class="badge mini" style="background:var\(--other\)">))'
     r'([^<]*)'
-    r'(</div><span class="tag">他クラブ</span></div>\s*'
+    r'(</div>\s*<span class="tag">他クラブ</span></div>\s*'
     r'<div class="body">\s*<div class="meta">コメント(\d+)</div>)',
     re.S,
 )

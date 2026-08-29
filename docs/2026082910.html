@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【反応まとめ】ヴィッセル神戸 1-0 セレッソ大阪</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>">
+<style>
+  :root{
+    --paper:#f6f2ea;
+    --paper-2:#efe9dc;
+    --ink:#241f19;
+    --ink-soft:#6b6153;
+    --nagoya:#8c1d20;
+    --nagoya-deep:#5c1214;
+    --nagoya-gold:#c8a24a;
+    --shimizu:#e8781f;
+    --shimizu-deep:#b95612;
+    --line:#ddd3bf;
+    --other:#4a5a63;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Meiryo UI","Meiryo","メイリオ","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px;}
+
+  /* page nav (back-link / prev-next) */
+  .page-nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:16px 20px 0;
+    font-size:12.5px;
+    flex-wrap:wrap;
+  }
+  .page-nav a{
+    color:var(--ink-soft);
+    text-decoration:none;
+    border-bottom:1px solid var(--line);
+    padding-bottom:1px;
+  }
+  .page-nav a:hover{color:var(--ink);border-color:var(--ink-soft);}
+  .page-nav-back{font-weight:700;}
+  .page-nav-adjacent{display:flex;gap:16px;flex-wrap:wrap;margin-left:auto;}
+  .page-nav-empty{display:inline-block;}
+
+  /* header / scoreboard */
+  .masthead{
+    padding:38px 20px 0;
+    text-align:center;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.24em;
+    color:var(--ink-soft);
+    font-weight:700;
+  }
+  .wrap > .masthead h1{
+    font-size:26px;
+    font-weight:700;
+    margin:10px 0 26px;
+    line-height:1.6;
+  }
+
+  .scoreboard{
+    background:linear-gradient(180deg,#2a2019,#1b140f);
+    border-radius:6px;
+    padding:26px 18px 22px;
+    color:#f3ead9;
+    box-shadow:0 10px 30px -14px rgba(0,0,0,.5);
+  }
+  .score-meta{
+    font-size:11px;
+    letter-spacing:.14em;
+    color:#c9bda3;
+    margin-bottom:16px;
+  }
+  .score-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+  }
+  .club{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    width:120px;
+  }
+  .badge{
+    width:52px;height:52px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;font-weight:700;color:#fff;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.25),0 1px 4px rgba(0,0,0,.2);
+    flex-shrink:0;
+    overflow:hidden;
+    background:var(--other);
+  }
+  .badge img{width:100%;height:100%;object-fit:cover;display:block;}
+  .badge.mini{width:30px;height:30px;font-size:13px;}
+  .club-name{font-size:13px;font-weight:700;letter-spacing:.04em;}
+  .score-num{
+    font-size:44px;font-weight:700;
+    display:flex;align-items:center;gap:14px;
+  }
+  .score-dash{color:#8f8471;font-size:28px;}
+  .score-goal{font-size:11px;color:#c9bda3;margin-top:2px;}
+
+  /* summary card */
+  .summary{
+    margin-top:26px;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:24px 22px;
+    font-size:15px;
+  }
+  .summary h2{
+    font-size:15px;
+    margin:0 0 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .summary h2::before{
+    content:"";
+    width:14px;height:14px;
+    background:var(--nagoya);
+    display:inline-block;
+    transform:rotate(45deg);
+  }
+  .summary p{margin:0 0 10px;color:#3b352c;}
+  .summary p:last-child{margin-bottom:0;}
+  .summary .cite{font-size:12px;color:var(--ink-soft);margin-top:14px;}
+
+  /* section headers */
+  .section{margin-top:48px;}
+  .section-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .section-head .rule{flex:1;height:1px;background:var(--line);}
+  .section-title{
+    font-size:19px;
+    font-weight:700;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-sub{font-size:12px;color:var(--ink-soft);margin:-10px 0 20px;}
+
+  /* comment cards */
+  .comment{
+    display:flex;
+    gap:12px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .comment:last-child{border-bottom:none;}
+  .comment .who{
+    flex-shrink:0;
+    width:64px;
+    text-align:center;
+  }
+  .comment .who .tag{
+    display:block;
+    font-size:10px;
+    color:var(--ink-soft);
+    margin-top:4px;
+    letter-spacing:.02em;
+  }
+  .comment .body{flex:1;min-width:0;}
+  .comment .meta{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .comment .paraphrase{
+    font-size:14.5px;
+    color:#3b352c;
+    margin-bottom:6px;
+  }
+  .comment .quote{
+    font-size:15.5px;
+    color:var(--ink);
+  }
+  .comment .quote span.line{
+    display:inline;
+  }
+  .comment .quote span.line::before{content:"「";color:var(--ink-soft);}
+  .comment .quote span.line::after{content:"」";color:var(--ink-soft);}
+
+  .badge.nichan{background:linear-gradient(135deg,#6b5b8c,#3f3357);}
+
+  /* X post cards */
+  .xpost{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    display:flex;
+    gap:12px;
+  }
+  .xpost .avatar{
+    width:36px;height:36px;border-radius:50%;
+    background:linear-gradient(135deg,#f3934a,var(--shimizu-deep));
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:13px;font-weight:700;
+  }
+  .xpost .handle{font-size:13px;font-weight:700;}
+  .xpost .at{font-size:12px;color:var(--ink-soft);font-weight:400;margin-left:4px;}
+  .xpost .paraphrase{font-size:13.5px;color:#3b352c;margin-top:4px;}
+  .xpost .quote{font-size:14.5px;margin-top:4px;}
+
+  .footnote{
+    margin-top:20px;
+    background:var(--paper-2);
+    border-left:3px solid var(--nagoya-gold);
+    padding:14px 16px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    border-radius:0 4px 4px 0;
+  }
+
+  .source-note{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:60px;
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:480px){
+    .score-num{font-size:34px;}
+    .club{width:92px;}
+    .badge{width:44px;height:44px;font-size:18px;}
+    .comment{gap:9px;}
+    .comment .who{width:52px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!--PAGE-NAV-START-->
+  <div id="page-nav" class="page-nav">
+    <a class="page-nav-back" href="index.html">← 一覧に戻る</a>
+    <div class="page-nav-adjacent"><a class="page-nav-prev" href="2026082909.html">← 京都 2-1 福岡</a><a class="page-nav-next" href="2026082905.html">→ 浦和 3-2 横浜FM</a></div>
+  </div>
+  <!--PAGE-NAV-END-->
+
+  <div class="masthead">
+    <div class="eyebrow">MATCH REACTION FILE</div>
+    <h1>ヴィッセル神戸 1-0 セレッソ大阪<br>掲示板・Xの反応まとめ</h1>
+  </div>
+
+  <div class="scoreboard">
+    <div class="score-meta">2026.08.29 (SAT) 19:03 KICK OFF ／ 第4節 ／ ノエビアスタジアム神戸 ／ 観衆 22,767人</div>
+    <div class="score-row">
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/e672e399f73d4b01.png" alt="ヴィッセル神戸"></div>
+        
+        <div class="club-name">ヴィッセル神戸</div>
+      </div>
+      <div class="score-num">1<span class="score-dash">−</span>0</div>
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/b0cd70a0b0643349.png" alt="セレッソ大阪"></div>
+        
+        <div class="club-name">セレッソ大阪</div>
+      </div>
+    </div>
+    <div class="score-goal">得点：小松 蓮（ヴ）71&#39;　／　警告・退場：小松 蓮、郷家 友太（ヴ）　ルーカス フェルナンデス（セ）</div>
+  </div>
+
+  <div class="summary">
+    <h2>まとめ</h2>
+    
+    <p>ノエビアスタジアム神戸で行われた第4節、ヴィッセル神戸はセレッソ大阪と対戦し1-0で勝利した。後半71分に途中出場の小松蓮がPKを冷静に決め、これが決勝点となった。試合中には小松への警告に加え、セレッソのルーカス フェルナンデス、神戸の郷家友太にもイエローカードが出されるなど、終盤にかけて熱を帯びた展開となった。</p>
+    
+    <p>主力に離脱者を抱える中での一戦となった神戸だが、経験豊富な選手たちの支えと途中出場の若手の奮闘もあり、値千金の白星をつかんだ。一方で、複雑なビルドアップや個の力に頼りがちな攻撃構築については疑問視する声も見られ、今後への課題も浮き彫りになった一戦だった。</p>
+    
+    <p>試合を彩った出来事としては前半に見られた際どい接触プレーに関する判定への疑問の声や、両者に不満が残る印象のジャッジについての言及も多く、審判の判断を巡る議論もファンの間で交わされた。それでも勝ち点3を積み上げたことへの安堵と手応えを口にする声が目立ち、次節以降への期待も語られている。</p>
+    
+    <div class="cite">出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿 ／ 5ch実況スレッド</div>
+  </div>
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="badge mini"><img src="assets/emblems/e672e399f73d4b01.png" alt=""></span>
+        
+        掲示板の反応：神戸サポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#A9002E">牛</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント2</div>
+        
+        <div class="quote"><span class="line">勝てばよかろうなのだ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#D0005C">桜</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント5</div>
+        
+        <div class="quote"><span class="line">チアゴの小学生みたいなハンドほんまに勘弁して</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#A9002E">牛</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント6</div>
+        
+        <div class="quote"><span class="line">体張ってくれたのナイス</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#A9002E">牛</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント7</div>
+        
+        <div class="quote"><span class="line">セレッソは良い外国人揃えててやっぱり怖かった</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#D0005C">桜</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント11</div>
+        
+        <div class="quote"><span class="line">個のクオリティ頼りのサッカーかなと</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#D0005C">桜</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント16</div>
+        
+        <div class="quote"><span class="line">忖度でイエロー2枚目出さないとかどこのレアルマドリーだよ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#D0005C">桜</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント18</div>
+        
+        <div class="quote"><span class="line">1発退場でもおかしくなかったからなー</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">👤</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント23</div>
+        
+        <div class="quote"><span class="line">3バックとウイングバックの意味あるのかな</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#D0005C">桜</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント26</div>
+        
+        <div class="quote"><span class="line">まあトントンかな</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="badge mini nichan">実</span>5ch実況スレッドの反応</div>
+      <div class="rule"></div>
+    </div>
+    <div class="section-sub">スレッド:「ヴィッセル神戸実況スレ」より</div>
+
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#96</div>
+        
+        <div class="quote"><span class="line">めっちゃ顔蹴られてんじゃん</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#104</div>
+        
+        <div class="quote"><span class="line">コロコロできめたー</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#107</div>
+        
+        <div class="quote"><span class="line">落ち着いてたわ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#117</div>
+        
+        <div class="quote"><span class="line">負けなくてよかった</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#118</div>
+        
+        <div class="quote"><span class="line">何とか喰らいついてるな</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#94</div>
+        
+        <div class="quote"><span class="line">トゥーレルが別の意味でキレキレ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#66</div>
+        
+        <div class="quote"><span class="line">スキッペって戦略なしの無能なの？？</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">試合後：Xの反応</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="xpost">
+      <div class="avatar">o</div>
+      <div class="body">
+        <div><span class="handle">o.h.</span><span class="at">@guitaristnanoda</span></div>
+        <div class="paraphrase">決勝点となったPKについて、キッカーの落ち着いた蹴り方に驚きの声を上げるファン。</div>
+        <div class="quote"><span class="line">小松の冷静すぎるPKすごかったなぁ</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">ト</div>
+      <div class="body">
+        <div><span class="handle">トレムカニ・ジアード（山田）</span><span class="at">@Jussi419</span></div>
+        <div class="paraphrase">復帰したベテラン選手がもたらすチーム全体への好影響と、監督の柔軟な選手起用を高く評価する内容。</div>
+        <div class="quote"><span class="line">高橋を逆サイドで起用するポジションに囚われない采配</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">ぴ</div>
+      <div class="body">
+        <div><span class="handle">ぴょろん。| 夏休みが終わらない</span><span class="at">@pyoronjp</span></div>
+        <div class="paraphrase">苦しいメンバー構成の中でも結果を出したことについて、指揮官の手腕を称賛する声。</div>
+        <div class="quote"><span class="line">苦しいメンバーでも勝ち点もぎり取る</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">も</div>
+      <div class="body">
+        <div><span class="handle">もっぴー</span><span class="at">@1039_vissel</span></div>
+        <div class="paraphrase">今季のホームでの初勝利を喜びつつ、離脱中の選手たちが戻るまでチームで勝ち点を積み上げていく決意を語る投稿。</div>
+        <div class="quote"><span class="line">今季ホーム初勝利です</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">s</div>
+      <div class="body">
+        <div><span class="handle">su.wa</span><span class="at">@suwakow</span></div>
+        <div class="paraphrase">試合内容は見ていないとしつつも、近年繰り返される粘り強い勝ち点獲得のパターンに言及するファン。</div>
+        <div class="quote"><span class="line">しぶとく勝ち点を稼いでるな</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">k</div>
+      <div class="body">
+        <div><span class="handle">kazu8</span><span class="at">@kazu_kazu8_</span></div>
+        <div class="paraphrase">互いに得点が入りにくい展開の中で運をつかみ取った勝利とし、攻撃面がまだ完成していない現状でも勝ち点を積めていることを前向きに捉える声。</div>
+        <div class="quote"><span class="line">まだまだ攻撃がハマっていない中勝ち点を積み上げていけている</span></div>
+      </div>
+    </div>
+    
+  </div>
+  
+
+  <div class="source-note">
+    出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿 ／ 5ch実況スレッド「ヴィッセル神戸実況スレ」<br>
+    試合結果出典：Ｊリーグ公式サイト<br>
+    このページはスクレイピング結果をもとにClaude APIが自動生成したものです。要約・引用は著作権ルール(逐語引用は15語程度・1ソース1回まで)に沿って生成していますが、公開前の確認を推奨します。
+  </div>
+
+</div>
+<script type="application/json" id="match-meta">{"game_id": 2026082910, "section": "第4節", "kickoff_iso": "2026-08-29T10:03:00.000Z", "home_team": "ヴィッセル神戸", "away_team": "セレッソ大阪", "home_score": 1, "away_score": 0, "home_short": "神戸", "away_short": "C大阪", "home_emblem_src": "assets/emblems/e672e399f73d4b01.png", "away_emblem_src": "assets/emblems/b0cd70a0b0643349.png", "home_color": "#A9002E", "away_color": "#D0005C", "fan_side": null}</script>
+</body>
+</html>

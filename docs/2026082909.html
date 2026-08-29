@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【反応まとめ】京都サンガF.C. 2-1 アビスパ福岡</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>">
+<style>
+  :root{
+    --paper:#f6f2ea;
+    --paper-2:#efe9dc;
+    --ink:#241f19;
+    --ink-soft:#6b6153;
+    --nagoya:#8c1d20;
+    --nagoya-deep:#5c1214;
+    --nagoya-gold:#c8a24a;
+    --shimizu:#e8781f;
+    --shimizu-deep:#b95612;
+    --line:#ddd3bf;
+    --other:#4a5a63;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Meiryo UI","Meiryo","メイリオ","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px;}
+
+  /* page nav (back-link / prev-next) */
+  .page-nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:16px 20px 0;
+    font-size:12.5px;
+    flex-wrap:wrap;
+  }
+  .page-nav a{
+    color:var(--ink-soft);
+    text-decoration:none;
+    border-bottom:1px solid var(--line);
+    padding-bottom:1px;
+  }
+  .page-nav a:hover{color:var(--ink);border-color:var(--ink-soft);}
+  .page-nav-back{font-weight:700;}
+  .page-nav-adjacent{display:flex;gap:16px;flex-wrap:wrap;margin-left:auto;}
+  .page-nav-empty{display:inline-block;}
+
+  /* header / scoreboard */
+  .masthead{
+    padding:38px 20px 0;
+    text-align:center;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.24em;
+    color:var(--ink-soft);
+    font-weight:700;
+  }
+  .wrap > .masthead h1{
+    font-size:26px;
+    font-weight:700;
+    margin:10px 0 26px;
+    line-height:1.6;
+  }
+
+  .scoreboard{
+    background:linear-gradient(180deg,#2a2019,#1b140f);
+    border-radius:6px;
+    padding:26px 18px 22px;
+    color:#f3ead9;
+    box-shadow:0 10px 30px -14px rgba(0,0,0,.5);
+  }
+  .score-meta{
+    font-size:11px;
+    letter-spacing:.14em;
+    color:#c9bda3;
+    margin-bottom:16px;
+  }
+  .score-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+  }
+  .club{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    width:120px;
+  }
+  .badge{
+    width:52px;height:52px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;font-weight:700;color:#fff;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.25),0 1px 4px rgba(0,0,0,.2);
+    flex-shrink:0;
+    overflow:hidden;
+    background:var(--other);
+  }
+  .badge img{width:100%;height:100%;object-fit:cover;display:block;}
+  .badge.mini{width:30px;height:30px;font-size:13px;}
+  .club-name{font-size:13px;font-weight:700;letter-spacing:.04em;}
+  .score-num{
+    font-size:44px;font-weight:700;
+    display:flex;align-items:center;gap:14px;
+  }
+  .score-dash{color:#8f8471;font-size:28px;}
+  .score-goal{font-size:11px;color:#c9bda3;margin-top:2px;}
+
+  /* summary card */
+  .summary{
+    margin-top:26px;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:24px 22px;
+    font-size:15px;
+  }
+  .summary h2{
+    font-size:15px;
+    margin:0 0 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .summary h2::before{
+    content:"";
+    width:14px;height:14px;
+    background:var(--nagoya);
+    display:inline-block;
+    transform:rotate(45deg);
+  }
+  .summary p{margin:0 0 10px;color:#3b352c;}
+  .summary p:last-child{margin-bottom:0;}
+  .summary .cite{font-size:12px;color:var(--ink-soft);margin-top:14px;}
+
+  /* section headers */
+  .section{margin-top:48px;}
+  .section-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .section-head .rule{flex:1;height:1px;background:var(--line);}
+  .section-title{
+    font-size:19px;
+    font-weight:700;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-sub{font-size:12px;color:var(--ink-soft);margin:-10px 0 20px;}
+
+  /* comment cards */
+  .comment{
+    display:flex;
+    gap:12px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .comment:last-child{border-bottom:none;}
+  .comment .who{
+    flex-shrink:0;
+    width:64px;
+    text-align:center;
+  }
+  .comment .who .tag{
+    display:block;
+    font-size:10px;
+    color:var(--ink-soft);
+    margin-top:4px;
+    letter-spacing:.02em;
+  }
+  .comment .body{flex:1;min-width:0;}
+  .comment .meta{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .comment .paraphrase{
+    font-size:14.5px;
+    color:#3b352c;
+    margin-bottom:6px;
+  }
+  .comment .quote{
+    font-size:15.5px;
+    color:var(--ink);
+  }
+  .comment .quote span.line{
+    display:inline;
+  }
+  .comment .quote span.line::before{content:"「";color:var(--ink-soft);}
+  .comment .quote span.line::after{content:"」";color:var(--ink-soft);}
+
+  .badge.nichan{background:linear-gradient(135deg,#6b5b8c,#3f3357);}
+
+  /* X post cards */
+  .xpost{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    display:flex;
+    gap:12px;
+  }
+  .xpost .avatar{
+    width:36px;height:36px;border-radius:50%;
+    background:linear-gradient(135deg,#f3934a,var(--shimizu-deep));
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:13px;font-weight:700;
+  }
+  .xpost .handle{font-size:13px;font-weight:700;}
+  .xpost .at{font-size:12px;color:var(--ink-soft);font-weight:400;margin-left:4px;}
+  .xpost .paraphrase{font-size:13.5px;color:#3b352c;margin-top:4px;}
+  .xpost .quote{font-size:14.5px;margin-top:4px;}
+
+  .footnote{
+    margin-top:20px;
+    background:var(--paper-2);
+    border-left:3px solid var(--nagoya-gold);
+    padding:14px 16px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    border-radius:0 4px 4px 0;
+  }
+
+  .source-note{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:60px;
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:480px){
+    .score-num{font-size:34px;}
+    .club{width:92px;}
+    .badge{width:44px;height:44px;font-size:18px;}
+    .comment{gap:9px;}
+    .comment .who{width:52px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!--PAGE-NAV-START-->
+  <div id="page-nav" class="page-nav">
+    <a class="page-nav-back" href="index.html">← 一覧に戻る</a>
+    <div class="page-nav-adjacent"><a class="page-nav-prev" href="2026082908.html">← 名古屋 2-1 岡山</a><a class="page-nav-next" href="2026082910.html">→ 神戸 1-0 C大阪</a></div>
+  </div>
+  <!--PAGE-NAV-END-->
+
+  <div class="masthead">
+    <div class="eyebrow">MATCH REACTION FILE</div>
+    <h1>京都サンガF.C. 2-1 アビスパ福岡<br>掲示板・Xの反応まとめ</h1>
+  </div>
+
+  <div class="scoreboard">
+    <div class="score-meta">2026.08.29 (SAT) 19:03 KICK OFF ／ 第4節 ／ サンガスタジアム by ＫＹＯＣＥＲＡ ／ 観衆 15,255人</div>
+    <div class="score-row">
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/e0985b96fcdc8894.png" alt="京都サンガF.C."></div>
+        
+        <div class="club-name">京都サンガF.C.</div>
+      </div>
+      <div class="score-num">2<span class="score-dash">−</span>1</div>
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/a1bc4ffd15e81722.png" alt="アビスパ福岡"></div>
+        
+        <div class="club-name">アビスパ福岡</div>
+      </div>
+    </div>
+    <div class="score-goal">得点：ラファエル エリアス（京）8&#39;、新井 晴樹（京）63&#39;、碓井 聖生（ア）86&#39;　／　警告・退場：前田 快、藤本 一輝、橋本 悠（ア）　尹 星俊（京）</div>
+  </div>
+
+  <div class="summary">
+    <h2>まとめ</h2>
+    
+    <p>京都サンガF.C.はホームでアビスパ福岡と対戦し、2対1で勝利を収めた。前半8分にラファエル・エリアスが先制点を決めると、後半63分には新井晴樹がリーグ初得点となるゴールを追加し試合を優位に進めた。終盤86分に福岡の碓井聖生が1点を返したものの、逃げ切りに成功した。</p>
+    
+    <p>試合を通じて福岡がボールを握る時間帯が長く、京都は被シュート数の多さに苦しんだが、守護神ハウスの好セーブに幾度も救われる展開となった。前半からプレッシングの整理が進み、前節と比較して修正力が見られたとの声も多く聞かれた。</p>
+    
+    <p>得点への関与という点では新加入のマセイオやウェベルトンら助っ人勢の存在感も際立ち、前線の連携に厚みが出てきたという評価が広がっている。一方でセンターバック陣の脆さや、ボランチのバランス面には依然として課題が残るとの指摘も根強い。</p>
+    
+    <p>試合には主審・副審の判定を巡る不満も噴出し、特に福岡の橋本悠選手への警告判定については両サポーターから疑問の声が上がった。福岡サイドではこの試合を含めた不振により、指揮官への風当たりが一段と強まっている。</p>
+    
+    <div class="cite">出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿 ／ 5ch実況スレッド</div>
+  </div>
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="badge mini"><img src="assets/emblems/e0985b96fcdc8894.png" alt=""></span>
+        
+        掲示板の反応：京都サポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">麿</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント1</div>
+        
+        <div class="quote"><span class="line">ラファエル・エリアスを讃えよ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">関</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント4</div>
+        
+        <div class="quote"><span class="line">新井晴樹J1初ゴールおめでとう</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">麿</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント5</div>
+        
+        <div class="quote"><span class="line">プレスの形がだいぶ整理されてて前節とは見違えてた</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#002159">蜂</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント7</div>
+        
+        <div class="quote"><span class="line">真ん中のCBは三國か上島居ないとキツいね</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/e0985b96fcdc8894.png" alt=""></div>
+        
+        <span class="tag">京都</span></div>
+      <div class="body">
+        <div class="meta">コメント9</div>
+        
+        <div class="quote"><span class="line">今までの歴代正キーパーに足らんかったモン全部持ってる感じ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">麿</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント12</div>
+        
+        <div class="quote"><span class="line">被シュート数ヤバかったもんな</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#002159">蜂</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント14</div>
+        
+        <div class="quote"><span class="line">橋本のあれはさすがに意見書とか出してほしい</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#002159">蜂</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント22</div>
+        
+        <div class="quote"><span class="line">いいサッカーしてるよ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#002159">蜂</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント25</div>
+        
+        <div class="quote"><span class="line">ロメウは天皇杯見る限りしばらくフィットしなさそう</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="badge mini"><img src="assets/emblems/a1bc4ffd15e81722.png" alt=""></span>
+        
+        掲示板の反応：福岡サポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/a1bc4ffd15e81722.png" alt=""></div>
+        
+        <span class="tag">福岡</span></div>
+      <div class="body">
+        <div class="meta">コメント21</div>
+        
+        <div class="quote"><span class="line">監督続投は間違っていたな</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="badge mini nichan">実</span>5ch実況スレッドの反応</div>
+      <div class="rule"></div>
+    </div>
+    <div class="section-sub">スレッド:「京都サンガ ★2」より</div>
+
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#807</div>
+        
+        <div class="quote"><span class="line">JPボランチが一番のガンってそろそろみんな気がついとるやろ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#872</div>
+        
+        <div class="quote"><span class="line">得点チャンス消してるしイエローなんだけどな</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#952</div>
+        
+        <div class="quote"><span class="line">完全にエルボーで殴っとるんだが</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#961</div>
+        
+        <div class="quote"><span class="line">今までの三試合でCKすらほとんど無かったろ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#968</div>
+        
+        <div class="quote"><span class="line">福岡が単調で助かってる感はある</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#990</div>
+        
+        <div class="quote"><span class="line">中野相手にパス多すぎ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#942</div>
+        
+        <div class="quote"><span class="line">まさか10人目のブラジル人が一番の補強になるとは</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">試合後：Xの反応</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="xpost">
+      <div class="avatar">ま</div>
+      <div class="body">
+        <div><span class="handle">まヰや～Q</span><span class="at">@moto_P</span></div>
+        <div class="paraphrase">エースがキャプテンとして重圧を背負いながら結果を出したことに感激するファンの投稿。</div>
+        <div class="quote"><span class="line">エリアス選手はキャプテンになって色々背負ってたんやね</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">せ</div>
+      <div class="body">
+        <div><span class="handle">せつな</span><span class="at">@Im_next_tyamu</span></div>
+        <div class="paraphrase">守護神と2得点者の活躍を称え、指揮官の采配にも手応えを感じたとするファンの声。</div>
+        <div class="quote"><span class="line">ハウス、エリアス、新井がえぐかった</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">D</div>
+      <div class="body">
+        <div><span class="handle">DCT_65190</span><span class="at">@DCT651901</span></div>
+        <div class="paraphrase">福岡にペースを握られる時間が長かったことへの不安を感じつつ、勝利できたことへの安堵を綴った投稿。</div>
+        <div class="quote"><span class="line">福岡ペースの時間が長すぎたのがアレだったけど勝ててよかった</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">水</div>
+      <div class="body">
+        <div><span class="handle">水野　哲</span><span class="at">@mizutetsu1981</span></div>
+        <div class="paraphrase">中盤でのボール奪取から攻撃への切り替えがスムーズになっている点を分析し、今後さらなる充実に期待する声。</div>
+        <div class="quote"><span class="line">JPが回収して尹が前を向くというここの2人の役割分担がうまく行っている</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">一</div>
+      <div class="body">
+        <div><span class="handle">一般の大学生OG@趣味垢</span><span class="at">@OGbectoru_shumi</span></div>
+        <div class="paraphrase">辛勝との認識を示しつつ、GKと控えFWの成長を評価しながらも守備の危うさは今後の改善点だとするコメント。</div>
+        <div class="quote"><span class="line">ウェヴェルトンも別人級になってた</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">H</div>
+      <div class="body">
+        <div><span class="handle">HUB池袋西口店</span><span class="at">@HUBikenisi</span></div>
+        <div class="paraphrase">応援先の店舗が勝利を喜び、来店客と共に祝杯を上げた様子を伝える投稿。</div>
+        <div class="quote"><span class="line">勝ち点3取ったど</span></div>
+      </div>
+    </div>
+    
+  </div>
+  
+
+  <div class="source-note">
+    出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿 ／ 5ch実況スレッド「京都サンガ ★2」<br>
+    試合結果出典：Ｊリーグ公式サイト<br>
+    このページはスクレイピング結果をもとにClaude APIが自動生成したものです。要約・引用は著作権ルール(逐語引用は15語程度・1ソース1回まで)に沿って生成していますが、公開前の確認を推奨します。
+  </div>
+
+</div>
+<script type="application/json" id="match-meta">{"game_id": 2026082909, "section": "第4節", "kickoff_iso": "2026-08-29T10:03:00.000Z", "home_team": "京都サンガF.C.", "away_team": "アビスパ福岡", "home_score": 2, "away_score": 1, "home_short": "京都", "away_short": "福岡", "home_emblem_src": "assets/emblems/e0985b96fcdc8894.png", "away_emblem_src": "assets/emblems/a1bc4ffd15e81722.png", "home_color": "#72246C", "away_color": "#002159", "fan_side": null}</script>
+</body>
+</html>

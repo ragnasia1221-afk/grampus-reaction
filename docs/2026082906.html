@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【反応まとめ】東京ヴェルディ 0-2 鹿島アントラーズ</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>">
+<style>
+  :root{
+    --paper:#f6f2ea;
+    --paper-2:#efe9dc;
+    --ink:#241f19;
+    --ink-soft:#6b6153;
+    --nagoya:#8c1d20;
+    --nagoya-deep:#5c1214;
+    --nagoya-gold:#c8a24a;
+    --shimizu:#e8781f;
+    --shimizu-deep:#b95612;
+    --line:#ddd3bf;
+    --other:#4a5a63;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Meiryo UI","Meiryo","メイリオ","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px;}
+
+  /* page nav (back-link / prev-next) */
+  .page-nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:16px 20px 0;
+    font-size:12.5px;
+    flex-wrap:wrap;
+  }
+  .page-nav a{
+    color:var(--ink-soft);
+    text-decoration:none;
+    border-bottom:1px solid var(--line);
+    padding-bottom:1px;
+  }
+  .page-nav a:hover{color:var(--ink);border-color:var(--ink-soft);}
+  .page-nav-back{font-weight:700;}
+  .page-nav-adjacent{display:flex;gap:16px;flex-wrap:wrap;margin-left:auto;}
+  .page-nav-empty{display:inline-block;}
+
+  /* header / scoreboard */
+  .masthead{
+    padding:38px 20px 0;
+    text-align:center;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.24em;
+    color:var(--ink-soft);
+    font-weight:700;
+  }
+  .wrap > .masthead h1{
+    font-size:26px;
+    font-weight:700;
+    margin:10px 0 26px;
+    line-height:1.6;
+  }
+
+  .scoreboard{
+    background:linear-gradient(180deg,#2a2019,#1b140f);
+    border-radius:6px;
+    padding:26px 18px 22px;
+    color:#f3ead9;
+    box-shadow:0 10px 30px -14px rgba(0,0,0,.5);
+  }
+  .score-meta{
+    font-size:11px;
+    letter-spacing:.14em;
+    color:#c9bda3;
+    margin-bottom:16px;
+  }
+  .score-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+  }
+  .club{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    width:120px;
+  }
+  .badge{
+    width:52px;height:52px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;font-weight:700;color:#fff;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.25),0 1px 4px rgba(0,0,0,.2);
+    flex-shrink:0;
+    overflow:hidden;
+    background:var(--other);
+  }
+  .badge img{width:100%;height:100%;object-fit:cover;display:block;}
+  .badge.mini{width:30px;height:30px;font-size:13px;}
+  .club-name{font-size:13px;font-weight:700;letter-spacing:.04em;}
+  .score-num{
+    font-size:44px;font-weight:700;
+    display:flex;align-items:center;gap:14px;
+  }
+  .score-dash{color:#8f8471;font-size:28px;}
+  .score-goal{font-size:11px;color:#c9bda3;margin-top:2px;}
+
+  /* summary card */
+  .summary{
+    margin-top:26px;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:24px 22px;
+    font-size:15px;
+  }
+  .summary h2{
+    font-size:15px;
+    margin:0 0 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .summary h2::before{
+    content:"";
+    width:14px;height:14px;
+    background:var(--nagoya);
+    display:inline-block;
+    transform:rotate(45deg);
+  }
+  .summary p{margin:0 0 10px;color:#3b352c;}
+  .summary p:last-child{margin-bottom:0;}
+  .summary .cite{font-size:12px;color:var(--ink-soft);margin-top:14px;}
+
+  /* section headers */
+  .section{margin-top:48px;}
+  .section-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .section-head .rule{flex:1;height:1px;background:var(--line);}
+  .section-title{
+    font-size:19px;
+    font-weight:700;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-sub{font-size:12px;color:var(--ink-soft);margin:-10px 0 20px;}
+
+  /* comment cards */
+  .comment{
+    display:flex;
+    gap:12px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .comment:last-child{border-bottom:none;}
+  .comment .who{
+    flex-shrink:0;
+    width:64px;
+    text-align:center;
+  }
+  .comment .who .tag{
+    display:block;
+    font-size:10px;
+    color:var(--ink-soft);
+    margin-top:4px;
+    letter-spacing:.02em;
+  }
+  .comment .body{flex:1;min-width:0;}
+  .comment .meta{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .comment .paraphrase{
+    font-size:14.5px;
+    color:#3b352c;
+    margin-bottom:6px;
+  }
+  .comment .quote{
+    font-size:15.5px;
+    color:var(--ink);
+  }
+  .comment .quote span.line{
+    display:inline;
+  }
+  .comment .quote span.line::before{content:"「";color:var(--ink-soft);}
+  .comment .quote span.line::after{content:"」";color:var(--ink-soft);}
+
+  .badge.nichan{background:linear-gradient(135deg,#6b5b8c,#3f3357);}
+
+  /* X post cards */
+  .xpost{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    display:flex;
+    gap:12px;
+  }
+  .xpost .avatar{
+    width:36px;height:36px;border-radius:50%;
+    background:linear-gradient(135deg,#f3934a,var(--shimizu-deep));
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:13px;font-weight:700;
+  }
+  .xpost .handle{font-size:13px;font-weight:700;}
+  .xpost .at{font-size:12px;color:var(--ink-soft);font-weight:400;margin-left:4px;}
+  .xpost .paraphrase{font-size:13.5px;color:#3b352c;margin-top:4px;}
+  .xpost .quote{font-size:14.5px;margin-top:4px;}
+
+  .footnote{
+    margin-top:20px;
+    background:var(--paper-2);
+    border-left:3px solid var(--nagoya-gold);
+    padding:14px 16px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    border-radius:0 4px 4px 0;
+  }
+
+  .source-note{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:60px;
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:480px){
+    .score-num{font-size:34px;}
+    .club{width:92px;}
+    .badge{width:44px;height:44px;font-size:18px;}
+    .comment{gap:9px;}
+    .comment .who{width:52px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!--PAGE-NAV-START-->
+  <div id="page-nav" class="page-nav">
+    <a class="page-nav-back" href="index.html">← 一覧に戻る</a>
+    <div class="page-nav-adjacent"><a class="page-nav-prev" href="2026082907.html">← 川崎 4-2 千葉</a><a class="page-nav-next" href="2026082908.html">→ 名古屋 2-1 岡山</a></div>
+  </div>
+  <!--PAGE-NAV-END-->
+
+  <div class="masthead">
+    <div class="eyebrow">MATCH REACTION FILE</div>
+    <h1>東京ヴェルディ 0-2 鹿島アントラーズ<br>掲示板・Xの反応まとめ</h1>
+  </div>
+
+  <div class="scoreboard">
+    <div class="score-meta">2026.08.29 (SAT) 19:03 KICK OFF ／ 第4節 ／ 味の素スタジアム ／ 観衆 21,966人</div>
+    <div class="score-row">
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/6a868cc45067defa.png" alt="東京ヴェルディ"></div>
+        
+        <div class="club-name">東京ヴェルディ</div>
+      </div>
+      <div class="score-num">0<span class="score-dash">−</span>2</div>
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/c2ba54ea3c5af809.png" alt="鹿島アントラーズ"></div>
+        
+        <div class="club-name">鹿島アントラーズ</div>
+      </div>
+    </div>
+    <div class="score-goal">得点：レオ セアラ（鹿）42&#39;、レオ セアラ（鹿）50&#39;　／　警告・退場：小川 諒也、広瀬 陸斗、エウベル（鹿）　平川 怜（東）</div>
+  </div>
+
+  <div class="summary">
+    <h2>まとめ</h2>
+    
+    <p>国立競技場ではなく味の素スタジアムで行われたJ1第4節、東京ヴェルディと鹿島アントラーズの一戦は、前半42分と後半開始直後の50分にレオ・セアラが立て続けに決めて鹿島が2点を先行。そのまま逃げ切り、鹿島が2-0で勝利を収めた。</p>
+    
+    <p>試合序盤はヴェルディも高い守備ラインを敷いて鹿島の攻撃に食らいつき、互角に近い展開を見せていたが、前半終盤に痛恨の失点。復帰したばかりの中盤の要がケガで途中交代となり、そのタイミングで流れが一気に鹿島へ傾いた。後半開始直後に追加点を許すと、ヴェルディ攻撃陣は終始厳しい時間を強いられ、決定的なチャンスを作れないまま試合を終えた。</p>
+    
+    <p>鹿島側では、途中出場から鮮烈な仕掛けを連発したベテランウインガーの存在が際立ち、前線の連携から生まれた先制点の起点にもなった。守備陣も含めて安定した試合運びで、今シーズン初となる無失点勝利を飾った。</p>
+    
+    <p>一方のヴェルディは、負傷交代した主力選手の状態への心配の声が多数上がり、加えて前線の得点源にも軽い負傷が伝えられるなど、台所事情の厳しさが改めて浮き彫りとなった。今後の巻き返しに向け、チーム編成やベンチワークへの疑問の声も強まっている。</p>
+    
+    <div class="cite">出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿 ／ 5ch実況スレッド</div>
+  </div>
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="badge mini"><img src="assets/emblems/6a868cc45067defa.png" alt=""></span>
+        
+        掲示板の反応：東京Vサポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#046A38">緑</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント13</div>
+        
+        <div class="quote"><span class="line">結果も内容も台所事情も酷過ぎて、悔しいとか通り越して虚無です</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#046A38">緑</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント23</div>
+        
+        <div class="quote"><span class="line">復帰戦の森田が負傷交代して即失点は絶望感やばかった</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#046A38">緑</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント32</div>
+        
+        <div class="quote"><span class="line">親会社のゼビオがそもそもJ1のレベルに無いってのが根幹かな</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#046A38">緑</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント33</div>
+        
+        <div class="quote"><span class="line">染野お祈り放り込みしか狙っちゃいけない決まりでもあるのか</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="badge mini"><img src="assets/emblems/c2ba54ea3c5af809.png" alt=""></span>
+        
+        掲示板の反応：鹿島サポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/c2ba54ea3c5af809.png" alt=""></div>
+        
+        <span class="tag">鹿島</span></div>
+      <div class="body">
+        <div class="meta">コメント2</div>
+        
+        <div class="quote"><span class="line">加入後で最高レベルの日だったエウベル。</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/c2ba54ea3c5af809.png" alt=""></div>
+        
+        <span class="tag">鹿島</span></div>
+      <div class="body">
+        <div class="meta">コメント8</div>
+        
+        <div class="quote"><span class="line">レオの2ゴール素晴らしい</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/c2ba54ea3c5af809.png" alt=""></div>
+        
+        <span class="tag">鹿島</span></div>
+      <div class="body">
+        <div class="meta">コメント17</div>
+        
+        <div class="quote"><span class="line">やっぱハマったときのクオリティはレベル違う</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/c2ba54ea3c5af809.png" alt=""></div>
+        
+        <span class="tag">鹿島</span></div>
+      <div class="body">
+        <div class="meta">コメント38</div>
+        
+        <div class="quote"><span class="line">ワントラップであっさり相手をかわして突破できるのは強み</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/c2ba54ea3c5af809.png" alt=""></div>
+        
+        <span class="tag">鹿島</span></div>
+      <div class="body">
+        <div class="meta">コメント54</div>
+        
+        <div class="quote"><span class="line">組織が個に破壊された格好だった</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/c2ba54ea3c5af809.png" alt=""></div>
+        
+        <span class="tag">鹿島</span></div>
+      <div class="body">
+        <div class="meta">コメント59</div>
+        
+        <div class="quote"><span class="line">円熟味が増してきたのか地味に欠かせない存在になっている</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="badge mini nichan">実</span>5ch実況スレッドの反応</div>
+      <div class="rule"></div>
+    </div>
+    <div class="section-sub">スレッド:「【実況】東京ヴェルディ」より</div>
+
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#384</div>
+        
+        <div class="quote"><span class="line">あてどもなく前に蹴っ飛ばしてるだけだった</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#514</div>
+        
+        <div class="quote"><span class="line">高い位置で奪ってチャンスが生まれる</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#558</div>
+        
+        <div class="quote"><span class="line">徐々に痛くなってきたのかな</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#567</div>
+        
+        <div class="quote"><span class="line">突破から鹿島見事だった</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#602</div>
+        
+        <div class="quote"><span class="line">怯えと混乱が伝わって来るプレーぶりだな</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#692</div>
+        
+        <div class="quote"><span class="line">点差以上に、
+サッカー、やらしてもらってないね</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#720</div>
+        
+        <div class="paraphrase">復帰した主力の負傷が続く状況に、今後への期待を持ちづらくなっているという嘆きの声。</div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">試合後：Xの反応</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="xpost">
+      <div class="avatar">だ</div>
+      <div class="body">
+        <div><span class="handle">だん</span><span class="at">@tan_tan_th</span></div>
+        <div class="paraphrase">今シーズン初の無失点勝利を喜び、この調子で上向いていってほしいという投稿。</div>
+        <div class="quote"><span class="line">今季初クリーンシート</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">ズ</div>
+      <div class="body">
+        <div><span class="handle">ズッキー・ストライク</span><span class="at">@zukkistrike</span></div>
+        <div class="paraphrase">相手GKの好セーブがなければもっと得点できていたはずだとしつつ、エースの活躍を称える投稿。</div>
+        <div class="quote"><span class="line">レオセアラは味方ながら理不尽</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">S</div>
+      <div class="body">
+        <div><span class="handle">Shinji</span><span class="at">@ShinjiFB750483</span></div>
+        <div class="paraphrase">内容的にも完勝と呼べる出来で、2点リード後は無理をしないゲーム運びだったと分析する投稿。</div>
+        <div class="quote"><span class="line">内容的にも完勝と言って差し支えないでしょう</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">U</div>
+      <div class="body">
+        <div><span class="handle">Uらい 𝕏</span><span class="at">@AntlersURAI</span></div>
+        <div class="paraphrase">得点者から守備陣、途中出場選手まで幅広く称える恒例の総括ポスト。</div>
+        <div class="quote"><span class="line">息をする様に点を取るレオセアラヨシ</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">M</div>
+      <div class="body">
+        <div><span class="handle">Mr_Lennen</span><span class="at">@Mr_Lennen</span></div>
+        <div class="paraphrase">先制点の場面での連係とタイミングの良さを評価する投稿。</div>
+        <div class="quote"><span class="line">タイミングバッチリの裏抜けシュートと最高</span></div>
+      </div>
+    </div>
+    
+  </div>
+  
+
+  <div class="source-note">
+    出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿 ／ 5ch実況スレッド「【実況】東京ヴェルディ」<br>
+    試合結果出典：Ｊリーグ公式サイト<br>
+    このページはスクレイピング結果をもとにClaude APIが自動生成したものです。要約・引用は著作権ルール(逐語引用は15語程度・1ソース1回まで)に沿って生成していますが、公開前の確認を推奨します。
+  </div>
+
+</div>
+<script type="application/json" id="match-meta">{"game_id": 2026082906, "section": "第4節", "kickoff_iso": "2026-08-29T10:03:00.000Z", "home_team": "東京ヴェルディ", "away_team": "鹿島アントラーズ", "home_score": 0, "away_score": 2, "home_short": "東京V", "away_short": "鹿島", "home_emblem_src": "assets/emblems/6a868cc45067defa.png", "away_emblem_src": "assets/emblems/c2ba54ea3c5af809.png", "home_color": "#046A38", "away_color": "#B8193F", "fan_side": null}</script>
+</body>
+</html>

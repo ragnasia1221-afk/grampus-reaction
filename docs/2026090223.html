@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【反応まとめ】サンフレッチェ広島 3-0 名古屋グランパス</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>">
+<style>
+  :root{
+    --paper:#f6f2ea;
+    --paper-2:#efe9dc;
+    --ink:#241f19;
+    --ink-soft:#6b6153;
+    --nagoya:#8c1d20;
+    --nagoya-deep:#5c1214;
+    --nagoya-gold:#c8a24a;
+    --shimizu:#e8781f;
+    --shimizu-deep:#b95612;
+    --line:#ddd3bf;
+    --other:#4a5a63;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Meiryo UI","Meiryo","メイリオ","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px;}
+
+  /* page nav (back-link / prev-next) */
+  .page-nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:16px 20px 0;
+    font-size:12.5px;
+    flex-wrap:wrap;
+  }
+  .page-nav a{
+    color:var(--ink-soft);
+    text-decoration:none;
+    border-bottom:1px solid var(--line);
+    padding-bottom:1px;
+  }
+  .page-nav a:hover{color:var(--ink);border-color:var(--ink-soft);}
+  .page-nav-back{font-weight:700;}
+  .page-nav-adjacent{display:flex;gap:16px;flex-wrap:wrap;margin-left:auto;}
+  .page-nav-empty{display:inline-block;}
+
+  /* header / scoreboard */
+  .masthead{
+    padding:38px 20px 0;
+    text-align:center;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.24em;
+    color:var(--ink-soft);
+    font-weight:700;
+  }
+  .wrap > .masthead h1{
+    font-size:26px;
+    font-weight:700;
+    margin:10px 0 26px;
+    line-height:1.6;
+  }
+
+  .scoreboard{
+    background:linear-gradient(180deg,#2a2019,#1b140f);
+    border-radius:6px;
+    padding:26px 18px 22px;
+    color:#f3ead9;
+    box-shadow:0 10px 30px -14px rgba(0,0,0,.5);
+  }
+  .score-meta{
+    font-size:11px;
+    letter-spacing:.14em;
+    color:#c9bda3;
+    margin-bottom:16px;
+  }
+  .score-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+  }
+  .club{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    width:120px;
+  }
+  .badge{
+    width:52px;height:52px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;font-weight:700;color:#fff;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.25),0 1px 4px rgba(0,0,0,.2);
+    flex-shrink:0;
+    overflow:hidden;
+    background:var(--other);
+  }
+  .badge img{width:100%;height:100%;object-fit:cover;display:block;}
+  .badge.mini{width:30px;height:30px;font-size:13px;}
+  .club-name{font-size:13px;font-weight:700;letter-spacing:.04em;}
+  .score-num{
+    font-size:44px;font-weight:700;
+    display:flex;align-items:center;gap:14px;
+  }
+  .score-dash{color:#8f8471;font-size:28px;}
+  .score-goal{font-size:11px;color:#c9bda3;margin-top:2px;}
+
+  /* summary card */
+  .summary{
+    margin-top:26px;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:24px 22px;
+    font-size:15px;
+  }
+  .summary h2{
+    font-size:15px;
+    margin:0 0 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .summary h2::before{
+    content:"";
+    width:14px;height:14px;
+    background:var(--nagoya);
+    display:inline-block;
+    transform:rotate(45deg);
+  }
+  .summary p{margin:0 0 10px;color:#3b352c;}
+  .summary p:last-child{margin-bottom:0;}
+  .summary .cite{font-size:12px;color:var(--ink-soft);margin-top:14px;}
+
+  /* section headers */
+  .section{margin-top:48px;}
+  .section-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .section-head .rule{flex:1;height:1px;background:var(--line);}
+  .section-title{
+    font-size:19px;
+    font-weight:700;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-sub{font-size:12px;color:var(--ink-soft);margin:-10px 0 20px;}
+
+  /* comment cards */
+  .comment{
+    display:flex;
+    gap:12px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .comment:last-child{border-bottom:none;}
+  .comment .who{
+    flex-shrink:0;
+    width:64px;
+    text-align:center;
+  }
+  .comment .who .tag{
+    display:block;
+    font-size:10px;
+    color:var(--ink-soft);
+    margin-top:4px;
+    letter-spacing:.02em;
+  }
+  .comment .body{flex:1;min-width:0;}
+  .comment .meta{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .comment .paraphrase{
+    font-size:14.5px;
+    color:#3b352c;
+    margin-bottom:6px;
+  }
+  .comment .quote{
+    font-size:15.5px;
+    color:var(--ink);
+  }
+  .comment .quote span.line{
+    display:inline;
+  }
+  .comment .quote span.line::before{content:"「";color:var(--ink-soft);}
+  .comment .quote span.line::after{content:"」";color:var(--ink-soft);}
+
+  .badge.nichan{background:linear-gradient(135deg,#6b5b8c,#3f3357);}
+
+  /* X post cards */
+  .xpost{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    display:flex;
+    gap:12px;
+  }
+  .xpost .avatar{
+    width:36px;height:36px;border-radius:50%;
+    background:linear-gradient(135deg,#f3934a,var(--shimizu-deep));
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:13px;font-weight:700;
+  }
+  .xpost .handle{font-size:13px;font-weight:700;}
+  .xpost .at{font-size:12px;color:var(--ink-soft);font-weight:400;margin-left:4px;}
+  .xpost .paraphrase{font-size:13.5px;color:#3b352c;margin-top:4px;}
+  .xpost .quote{font-size:14.5px;margin-top:4px;}
+
+  .footnote{
+    margin-top:20px;
+    background:var(--paper-2);
+    border-left:3px solid var(--nagoya-gold);
+    padding:14px 16px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    border-radius:0 4px 4px 0;
+  }
+
+  .source-note{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:60px;
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:480px){
+    .score-num{font-size:34px;}
+    .club{width:92px;}
+    .badge{width:44px;height:44px;font-size:18px;}
+    .comment{gap:9px;}
+    .comment .who{width:52px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!--PAGE-NAV-START-->
+  <div id="page-nav" class="page-nav">
+    <a class="page-nav-back" href="index.html">← 一覧に戻る</a>
+    <div class="page-nav-adjacent"><a class="page-nav-prev" href="2026090222.html">← C大阪 2-0 柏</a><a class="page-nav-next" href="2026090224.html">→ 福岡 2-3 浦和</a></div>
+  </div>
+  <!--PAGE-NAV-END-->
+
+  <div class="masthead">
+    <div class="eyebrow">MATCH REACTION FILE</div>
+    <h1>サンフレッチェ広島 3-0 名古屋グランパス<br>掲示板・Xの反応まとめ</h1>
+  </div>
+
+  <div class="scoreboard">
+    <div class="score-meta">2026.09.02 (WED) 19:03 KICK OFF ／ 第5節 ／ エディオンピースウイング広島 ／ 観衆 26,892人</div>
+    <div class="score-row">
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/c0a7aaa1d2720727.png" alt="サンフレッチェ広島"></div>
+        
+        <div class="club-name">サンフレッチェ広島</div>
+      </div>
+      <div class="score-num">3<span class="score-dash">−</span>0</div>
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/fba44cc426482528.png" alt="名古屋グランパス"></div>
+        
+        <div class="club-name">名古屋グランパス</div>
+      </div>
+    </div>
+    <div class="score-goal">得点：加藤 陸次樹（サ）71&#39;、鈴木 章斗（サ）80&#39;、セバスティアン アレー（サ）90+1&#39;　／　警告・退場：稲垣 祥、佐藤 瑶大（名）　松本 泰志（サ）</div>
+  </div>
+
+  <div class="summary">
+    <h2>まとめ</h2>
+    
+    <p>第5節、サンフレッチェ広島とのアウェー戦で名古屋グランパスは0-3の完敗を喫した。前半はスコアレスで終えたものの、終盤の71分に加藤陸次樹、80分に鈴木章斗、アディショナルタイムにはセバスティアン アレーと立て続けに失点し、勝ち点を積み上げることができなかった。</p>
+    
+    <p>試合開始から広島の強度あるプレスに苦しみ、なかなかボールを握れない立ち上がりとなった。中盤でのミスから広島にペースを渡す時間帯が長く続き、和泉や山岸を中心とした前線の連携もかみ合わない場面が目立った。前半17分には稲垣が警告を受けるなど、劣勢の中で耐える展開が続いた。</p>
+    
+    <p>前半終了間際にはVARの介入によるオフサイド判定で得点が認められない場面もあり、際どい判定に一喜一憂する時間帯もあった。それでも前半をスコアレスで折り返したことは一定の収穫と言える内容だった。</p>
+    
+    <p>後半に入ると途中投入されたアレーの存在感が際立ち、広島の攻撃に厚みが増した。名古屋は選手交代のタイミングが後手に回り、疲労の見える選手を替えられないまま失点を重ねる結果となった。終盤には佐藤にも警告が出され、なすすべなく試合を終えることとなった。</p>
+    
+    <p>平日開催にもかかわらず現地は超満員となり、双方のサポーターが詰めかけた一戦。名古屋サポーターの間では采配や補強に対する不満の声が上がる一方、広島サポーターからはアレーの存在感を称える声が相次いだ。</p>
+    
+    <div class="cite">出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿 ／ 5ch実況スレッド</div>
+  </div>
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="badge mini"><img src="assets/emblems/c0a7aaa1d2720727.png" alt=""></span>
+        
+        掲示板の反応：広島サポーター（対比として）</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">👤</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント65</div>
+        
+        <div class="quote"><span class="line">名古屋のカウンターの起点になること多かったのも事実</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">👤</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント10</div>
+        
+        <div class="quote"><span class="line">はるかに名古屋フロントがダメダメ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#583F99">熊</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント2</div>
+        
+        <div class="quote"><span class="line">前半の虚無っぷりが気になるので修正頼んますよ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">👤</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント69</div>
+        
+        <div class="quote"><span class="line">一生がキャッチしてるボールに チャレンジしてる時点で ファール</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="badge mini"><img src="assets/emblems/fba44cc426482528.png" alt=""></span>
+        
+        掲示板の反応：名古屋サポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fba44cc426482528.png" alt=""></div>
+        
+        <span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント17</div>
+        
+        <div class="quote"><span class="line">5試合で山岸木村和泉のベーストリデンテにマテウス加えてもG/Aが1しかない</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fba44cc426482528.png" alt=""></div>
+        
+        <span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント15</div>
+        
+        <div class="quote"><span class="line">山岸のパフォーマンスがダメダメでもスタメン奪える選手がいません</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fba44cc426482528.png" alt=""></div>
+        
+        <span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント31</div>
+        
+        <div class="quote"><span class="line">4連戦目中3日アウェイでスタメン固定とかありえんやろ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fba44cc426482528.png" alt=""></div>
+        
+        <span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント43</div>
+        
+        <div class="quote"><span class="line">補強してないというより補強ができないが正しい</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fba44cc426482528.png" alt=""></div>
+        
+        <span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント57</div>
+        
+        <div class="quote"><span class="line">10番は早く欧州行ってください</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fba44cc426482528.png" alt=""></div>
+        
+        <span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント24</div>
+        
+        <div class="quote"><span class="line">層が厚く誰が出ても驚異の広島</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="badge mini nichan">実</span>5ch実況スレッドの反応</div>
+      <div class="rule"></div>
+    </div>
+    <div class="section-sub">スレッド:「◇実況にも集え！！名古屋グランパスファン◇ ★2」より</div>
+
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#246</div>
+        
+        <div class="quote"><span class="line">後半長身アレーにクロス合わせやられるかもな</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#248</div>
+        
+        <div class="quote"><span class="line">センスないんだよな
+得点の匂いしない</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#409</div>
+        
+        <div class="quote"><span class="line">左は小屋松にまかせて中山を右シャドー、WB甲田、右CB佐藤を試して欲しい</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#807</div>
+        
+        <div class="quote"><span class="line">実質勝ってるな</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#892</div>
+        
+        <div class="quote"><span class="line">CB補強しないの本当にね</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#977</div>
+        
+        <div class="quote"><span class="line">両翼が全く仕掛けないからシステムとして成り立ってない</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#993</div>
+        
+        <div class="quote"><span class="line">仕掛けないwbにさばけないボランチに上がるだけのCBで押し込むのは無理よ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#997</div>
+        
+        <div class="quote"><span class="line">中山に頼らないといけないくらいの選手層なのが大問題だ</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">試合後：Xの反応</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="xpost">
+      <div class="avatar">ま</div>
+      <div class="body">
+        <div><span class="handle">まままー</span><span class="at">@masa_nfrecce</span></div>
+        <div class="paraphrase">終盤に得点した3選手それぞれのプレーぶりを称賛し、暑さの中での快勝を喜ぶ投稿。</div>
+        <div class="quote"><span class="line">苦しいところで決めてくれた陸次樹、さすがの章斗、異次元アレー</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">T</div>
+      <div class="body">
+        <div><span class="handle">TaK_Taddy/TakashiTado</span><span class="at">@TK_Taddy_AAIO</span></div>
+        <div class="paraphrase">前半は停滞していたが後半特に終盤の出来が良く、決めるべき選手が結果を残した完勝だったと総括する投稿。</div>
+        <div class="quote"><span class="line">前半は動けてなかったけど後半入って特に終盤は素晴らしかった</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">ゆ</div>
+      <div class="body">
+        <div><span class="handle">ゆゆゆ</span><span class="at">@kumakuma_3snfr</span></div>
+        <div class="paraphrase">リーグ戦の引き分けが続いていた中で対戦相手に勝てたことを喜び、前線3人の得点と控え選手の復帰も嬉しいと語る投稿。</div>
+        <div class="quote"><span class="line">苦手名古屋に勝てて嬉しい</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">ち</div>
+      <div class="body">
+        <div><span class="handle">ちょこみんと</span><span class="at">@hamuta_17</span></div>
+        <div class="paraphrase">得点者が3人とも異なり、それぞれの選手にドラマがあったことを喜ぶ内容の投稿。</div>
+        <div class="quote"><span class="line">得点者が全員違うのがめっちゃいい</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">ま</div>
+      <div class="body">
+        <div><span class="handle">まぁ、いっか</span><span class="at">@maikichi0320</span></div>
+        <div class="paraphrase">活躍した選手の実力がJリーグの水準を超えていると驚きを込めて評する投稿。</div>
+        <div class="quote"><span class="line">アレーJリーグにおったらいけんだろ</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">波</div>
+      <div class="body">
+        <div><span class="handle">波田 健一(KEN HADA 気象予報士)</span><span class="at">@hadaken69</span></div>
+        <div class="paraphrase">マン・オブ・ザ・マッチには決勝点に絡んだ選手が選ばれるのが当然だとし、クラブの姿勢を象徴する言葉を紹介する投稿。</div>
+        <div class="quote"><span class="line">サンフレッチェはいつも勝者じゃなくちゃいけない</span></div>
+      </div>
+    </div>
+    
+  </div>
+  
+
+  <div class="source-note">
+    出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿 ／ 5ch実況スレッド「◇実況にも集え！！名古屋グランパスファン◇ ★2」<br>
+    試合結果出典：Ｊリーグ公式サイト<br>
+    このページはスクレイピング結果をもとにClaude APIが自動生成したものです。要約・引用は著作権ルール(逐語引用は15語程度・1ソース1回まで)に沿って生成していますが、公開前の確認を推奨します。
+  </div>
+
+</div>
+<script type="application/json" id="match-meta">{"game_id": 2026090223, "section": "第5節", "kickoff_iso": "2026-09-02T10:03:00.000Z", "home_team": "サンフレッチェ広島", "away_team": "名古屋グランパス", "home_score": 3, "away_score": 0, "home_short": "広島", "away_short": "名古屋", "home_emblem_src": "assets/emblems/c0a7aaa1d2720727.png", "away_emblem_src": "assets/emblems/fba44cc426482528.png", "home_color": "#583F99", "away_color": "#D80C18", "fan_side": "away"}</script>
+</body>
+</html>

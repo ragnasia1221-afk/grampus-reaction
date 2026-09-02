@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【反応まとめ】ジェフユナイテッド千葉 1-2 ファジアーノ岡山</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>">
+<style>
+  :root{
+    --paper:#f6f2ea;
+    --paper-2:#efe9dc;
+    --ink:#241f19;
+    --ink-soft:#6b6153;
+    --nagoya:#8c1d20;
+    --nagoya-deep:#5c1214;
+    --nagoya-gold:#c8a24a;
+    --shimizu:#e8781f;
+    --shimizu-deep:#b95612;
+    --line:#ddd3bf;
+    --other:#4a5a63;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Meiryo UI","Meiryo","メイリオ","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px;}
+
+  /* page nav (back-link / prev-next) */
+  .page-nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:16px 20px 0;
+    font-size:12.5px;
+    flex-wrap:wrap;
+  }
+  .page-nav a{
+    color:var(--ink-soft);
+    text-decoration:none;
+    border-bottom:1px solid var(--line);
+    padding-bottom:1px;
+  }
+  .page-nav a:hover{color:var(--ink);border-color:var(--ink-soft);}
+  .page-nav-back{font-weight:700;}
+  .page-nav-adjacent{display:flex;gap:16px;flex-wrap:wrap;margin-left:auto;}
+  .page-nav-empty{display:inline-block;}
+
+  /* header / scoreboard */
+  .masthead{
+    padding:38px 20px 0;
+    text-align:center;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.24em;
+    color:var(--ink-soft);
+    font-weight:700;
+  }
+  .wrap > .masthead h1{
+    font-size:26px;
+    font-weight:700;
+    margin:10px 0 26px;
+    line-height:1.6;
+  }
+
+  .scoreboard{
+    background:linear-gradient(180deg,#2a2019,#1b140f);
+    border-radius:6px;
+    padding:26px 18px 22px;
+    color:#f3ead9;
+    box-shadow:0 10px 30px -14px rgba(0,0,0,.5);
+  }
+  .score-meta{
+    font-size:11px;
+    letter-spacing:.14em;
+    color:#c9bda3;
+    margin-bottom:16px;
+  }
+  .score-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+  }
+  .club{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    width:120px;
+  }
+  .badge{
+    width:52px;height:52px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;font-weight:700;color:#fff;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.25),0 1px 4px rgba(0,0,0,.2);
+    flex-shrink:0;
+    overflow:hidden;
+    background:var(--other);
+  }
+  .badge img{width:100%;height:100%;object-fit:cover;display:block;}
+  .badge.mini{width:30px;height:30px;font-size:13px;}
+  .club-name{font-size:13px;font-weight:700;letter-spacing:.04em;}
+  .score-num{
+    font-size:44px;font-weight:700;
+    display:flex;align-items:center;gap:14px;
+  }
+  .score-dash{color:#8f8471;font-size:28px;}
+  .score-goal{font-size:11px;color:#c9bda3;margin-top:2px;}
+
+  /* summary card */
+  .summary{
+    margin-top:26px;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:24px 22px;
+    font-size:15px;
+  }
+  .summary h2{
+    font-size:15px;
+    margin:0 0 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .summary h2::before{
+    content:"";
+    width:14px;height:14px;
+    background:var(--nagoya);
+    display:inline-block;
+    transform:rotate(45deg);
+  }
+  .summary p{margin:0 0 10px;color:#3b352c;}
+  .summary p:last-child{margin-bottom:0;}
+  .summary .cite{font-size:12px;color:var(--ink-soft);margin-top:14px;}
+
+  /* section headers */
+  .section{margin-top:48px;}
+  .section-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .section-head .rule{flex:1;height:1px;background:var(--line);}
+  .section-title{
+    font-size:19px;
+    font-weight:700;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-sub{font-size:12px;color:var(--ink-soft);margin:-10px 0 20px;}
+
+  /* comment cards */
+  .comment{
+    display:flex;
+    gap:12px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .comment:last-child{border-bottom:none;}
+  .comment .who{
+    flex-shrink:0;
+    width:64px;
+    text-align:center;
+  }
+  .comment .who .tag{
+    display:block;
+    font-size:10px;
+    color:var(--ink-soft);
+    margin-top:4px;
+    letter-spacing:.02em;
+  }
+  .comment .body{flex:1;min-width:0;}
+  .comment .meta{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .comment .paraphrase{
+    font-size:14.5px;
+    color:#3b352c;
+    margin-bottom:6px;
+  }
+  .comment .quote{
+    font-size:15.5px;
+    color:var(--ink);
+  }
+  .comment .quote span.line{
+    display:inline;
+  }
+  .comment .quote span.line::before{content:"「";color:var(--ink-soft);}
+  .comment .quote span.line::after{content:"」";color:var(--ink-soft);}
+
+  .badge.nichan{background:linear-gradient(135deg,#6b5b8c,#3f3357);}
+
+  /* X post cards */
+  .xpost{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    display:flex;
+    gap:12px;
+  }
+  .xpost .avatar{
+    width:36px;height:36px;border-radius:50%;
+    background:linear-gradient(135deg,#f3934a,var(--shimizu-deep));
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:13px;font-weight:700;
+  }
+  .xpost .handle{font-size:13px;font-weight:700;}
+  .xpost .at{font-size:12px;color:var(--ink-soft);font-weight:400;margin-left:4px;}
+  .xpost .paraphrase{font-size:13.5px;color:#3b352c;margin-top:4px;}
+  .xpost .quote{font-size:14.5px;margin-top:4px;}
+
+  .footnote{
+    margin-top:20px;
+    background:var(--paper-2);
+    border-left:3px solid var(--nagoya-gold);
+    padding:14px 16px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    border-radius:0 4px 4px 0;
+  }
+
+  .source-note{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:60px;
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:480px){
+    .score-num{font-size:34px;}
+    .club{width:92px;}
+    .badge{width:44px;height:44px;font-size:18px;}
+    .comment{gap:9px;}
+    .comment .who{width:52px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!--PAGE-NAV-START-->
+  <div id="page-nav" class="page-nav">
+    <a class="page-nav-back" href="index.html">← 一覧に戻る</a>
+    <div class="page-nav-adjacent"><a class="page-nav-prev" href="2026090216.html">← 水戸 4-2 鹿島</a><a class="page-nav-next" href="2026090218.html">→ 東京V 0-2 神戸</a></div>
+  </div>
+  <!--PAGE-NAV-END-->
+
+  <div class="masthead">
+    <div class="eyebrow">MATCH REACTION FILE</div>
+    <h1>ジェフユナイテッド千葉 1-2 ファジアーノ岡山<br>掲示板・Xの反応まとめ</h1>
+  </div>
+
+  <div class="scoreboard">
+    <div class="score-meta">2026.09.02 (WED) 19:03 KICK OFF ／ 第5節 ／ フクダ電子アリーナ ／ 観衆 9,712人</div>
+    <div class="score-row">
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/cde6e5e47f1b870f.png" alt="ジェフユナイテッド千葉"></div>
+        
+        <div class="club-name">ジェフユナイテッド千葉</div>
+      </div>
+      <div class="score-num">1<span class="score-dash">−</span>2</div>
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/7daa3979f35d028b.png" alt="ファジアーノ岡山"></div>
+        
+        <div class="club-name">ファジアーノ岡山</div>
+      </div>
+    </div>
+    <div class="score-goal">得点：レオ ガウショ（フ）31&#39;、田中 和樹（ジ）41&#39;、神谷 優太（フ）90+4&#39;　／　警告・退場：津久井 匠海、米倉 恒貴（ジ）　宮本 英治（フ）</div>
+  </div>
+
+  <div class="summary">
+    <h2>まとめ</h2>
+    
+    <p>フクダ電子アリーナで行われたJ1第5節、ジェフユナイテッド千葉とファジアーノ岡山の一戦は、岡山が終盤に劇的な決勝点を挙げて2-1で勝利した。前半31分に岡山のレオ ガウショが先制すると、千葉も41分に田中和樹が同点ゴールを決めて食い下がったが、アディショナルタイムに岡山の神谷優太が勝ち越し弾を突き刺し、試合の主導権を最後まで手放さなかった岡山が勝ち点3を積み上げた。</p>
+    
+    <p>岡山にとっては長年苦戦してきたこの会場での初勝利という記念すべき結果となり、選手・サポーターともに歓喜に沸いた。一方の千葉は開幕から続く連敗を止められず、勝ち点を1つも積めない厳しい状況が続いている。ホームでの反撃も及ばず、チーム状態や指揮官への風当たりは一層強まっている。</p>
+    
+    <p>試合後は両クラブのサポーターの間で対照的な反応が広がった。岡山側は歓喜と安堵の声に包まれ、鬼門突破を喜ぶ投稿が相次いだ一方、千葉側では守備の脆さや采配への疑問、監督交代を求める声が掲示板やSNS上で数多く見られた。5ch実況板でも、既に開幕から続く前節までの苦戦を踏まえた辛辣な意見が飛び交い、今後のチーム編成や監督人事への関心が高まっている。</p>
+    
+    <div class="cite">出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿 ／ 5ch実況スレッド</div>
+  </div>
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="badge mini"><img src="assets/emblems/cde6e5e47f1b870f.png" alt=""></span>
+        
+        掲示板の反応：千葉サポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/cde6e5e47f1b870f.png" alt=""></div>
+        
+        <span class="tag">千葉</span></div>
+      <div class="body">
+        <div class="meta">コメント6</div>
+        
+        <div class="quote"><span class="line">開幕から全敗継続</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/cde6e5e47f1b870f.png" alt=""></div>
+        
+        <span class="tag">千葉</span></div>
+      <div class="body">
+        <div class="meta">コメント26</div>
+        
+        <div class="quote"><span class="line">開幕5連敗、決まったわけではないが</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/cde6e5e47f1b870f.png" alt=""></div>
+        
+        <span class="tag">千葉</span></div>
+      <div class="body">
+        <div class="meta">コメント23</div>
+        
+        <div class="quote"><span class="line">もう少しパスのスピード上がらないかなー</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/cde6e5e47f1b870f.png" alt=""></div>
+        
+        <span class="tag">千葉</span></div>
+      <div class="body">
+        <div class="meta">コメント58</div>
+        
+        <div class="quote"><span class="line">監督交代しろって口では簡単に言える</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">雉</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント9</div>
+        
+        <div class="quote"><span class="line">もったいない失点は反省しなければならない</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">雉</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント14</div>
+        
+        <div class="quote"><span class="line">去年の鹿島戦も神谷だったし</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">👤</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント11</div>
+        
+        <div class="quote"><span class="line">監督コーチの質があまりにも酷すぎる</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">宮</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント43</div>
+        
+        <div class="quote"><span class="line">こんなの小林監督じゃなくても誰がやっても詰んでる</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="badge mini"><img src="assets/emblems/7daa3979f35d028b.png" alt=""></span>
+        
+        掲示板の反応：岡山サポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/7daa3979f35d028b.png" alt=""></div>
+        
+        <span class="tag">岡山</span></div>
+      <div class="body">
+        <div class="meta">コメント12</div>
+        
+        <div class="quote"><span class="line">個の力に依存しすぎな気がする</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/7daa3979f35d028b.png" alt=""></div>
+        
+        <span class="tag">岡山</span></div>
+      <div class="body">
+        <div class="meta">コメント47</div>
+        
+        <div class="quote"><span class="line">我々の居場所はＪ２に戻る</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="badge mini nichan">実</span>5ch実況スレッドの反応</div>
+      <div class="rule"></div>
+    </div>
+    <div class="section-sub">スレッド:「ジェフユナイテッド千葉実況 vs 川崎」より</div>
+
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#95</div>
+        
+        <div class="quote"><span class="line">ボールに喰いついてスペースを相手に使わせる</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#158</div>
+        
+        <div class="quote"><span class="line">やっと入ったｗ　田中はえー</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#213</div>
+        
+        <div class="quote"><span class="line">守備構築できてないな</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#405</div>
+        
+        <div class="quote"><span class="line">6vs3で失点とかユン時代かよ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#432</div>
+        
+        <div class="quote"><span class="line">4試合13失点は酷すぎるな</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#457</div>
+        
+        <div class="quote"><span class="line">松田浩でも連れてくれば一週間で解消するぞ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#501</div>
+        
+        <div class="quote"><span class="line">圧倒的にボールを支配できる相手じゃないと成立しない</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#767</div>
+        
+        <div class="quote"><span class="line">裏のスペース空きまくって失点も増える</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">試合後：Xの反応</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="xpost">
+      <div class="avatar">サ</div>
+      <div class="body">
+        <div><span class="handle">サンファジ</span><span class="at">@SanFagi</span></div>
+        <div class="paraphrase">劇的な決勝点を決めた神谷選手への感謝と、悲願だったこの会場での初勝利を喜ぶ投稿。</div>
+        <div class="quote"><span class="line">神様！仏様！神谷様！！！！！！！</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">#</div>
+      <div class="body">
+        <div><span class="handle">#フグ田タラヲ撲滅委員会会長(鯉雉)</span><span class="at">@tarawo_fuckyou</span></div>
+        <div class="paraphrase">J2時代から一度も勝てなかった会場でついに白星を挙げ、長年のジンクスを断ち切ったことを喜ぶ投稿。</div>
+        <div class="quote"><span class="line">ようやくJ1の舞台で初勝利し</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">や</div>
+      <div class="body">
+        <div><span class="handle">やすは</span><span class="at">@yasuha_okafagi</span></div>
+        <div class="paraphrase">アウェイでの今季初勝利を、過去の劇的勝利を思わせる神谷選手の得点で飾ったことへの興奮を表した投稿。</div>
+        <div class="quote"><span class="line">アウェイ鹿島戦を思い出させる神谷の劇的ゴール</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">N</div>
+      <div class="body">
+        <div><span class="handle">NOM大将</span><span class="at">@war_rock76</span></div>
+        <div class="paraphrase">16年越しでこの会場初勝利を果たしたことに感激し、活躍した選手たちの名前を挙げて称える投稿。</div>
+        <div class="quote"><span class="line">苦節16年！フクアリ初勝利！！</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">た</div>
+      <div class="body">
+        <div><span class="handle">たそがれ</span><span class="at">@tasogareskb</span></div>
+        <div class="paraphrase">後半に攻撃の強度を高めた采配が勝利につながったと評価する投稿。</div>
+        <div class="quote"><span class="line">後半にガンガン火力アップさせた木山監督の作戦勝ち</span></div>
+      </div>
+    </div>
+    
+    <div class="xpost">
+      <div class="avatar">赤</div>
+      <div class="body">
+        <div><span class="handle">赤ヘル〜男は黙って知行合一〜</span><span class="at">@red_hel_carpboy</span></div>
+        <div class="paraphrase">後半終了間際の値千金ゴールに興奮し、長年の鬼門をついに突破できたことに感無量の様子を語る投稿。</div>
+        <div class="quote"><span class="line">神谷選手が値千金のゴール</span></div>
+      </div>
+    </div>
+    
+  </div>
+  
+
+  <div class="source-note">
+    出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿 ／ 5ch実況スレッド「ジェフユナイテッド千葉実況 vs 川崎」<br>
+    試合結果出典：Ｊリーグ公式サイト<br>
+    このページはスクレイピング結果をもとにClaude APIが自動生成したものです。要約・引用は著作権ルール(逐語引用は15語程度・1ソース1回まで)に沿って生成していますが、公開前の確認を推奨します。
+  </div>
+
+</div>
+<script type="application/json" id="match-meta">{"game_id": 2026090217, "section": "第5節", "kickoff_iso": "2026-09-02T10:03:00.000Z", "home_team": "ジェフユナイテッド千葉", "away_team": "ファジアーノ岡山", "home_score": 1, "away_score": 2, "home_short": "千葉", "away_short": "岡山", "home_emblem_src": "assets/emblems/cde6e5e47f1b870f.png", "away_emblem_src": "assets/emblems/7daa3979f35d028b.png", "home_color": "#FFDD00", "away_color": "#B10342", "fan_side": null}</script>
+</body>
+</html>

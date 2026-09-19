@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【反応まとめ】ＦＣ東京 1-0 名古屋グランパス</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>">
+<style>
+  :root{
+    --paper:#f6f2ea;
+    --paper-2:#efe9dc;
+    --ink:#241f19;
+    --ink-soft:#6b6153;
+    --nagoya:#8c1d20;
+    --nagoya-deep:#5c1214;
+    --nagoya-gold:#c8a24a;
+    --shimizu:#e8781f;
+    --shimizu-deep:#b95612;
+    --line:#ddd3bf;
+    --other:#4a5a63;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Meiryo UI","Meiryo","メイリオ","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px;}
+
+  /* page nav (back-link / prev-next) */
+  .page-nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:16px 20px 0;
+    font-size:12.5px;
+    flex-wrap:wrap;
+  }
+  .page-nav a{
+    color:var(--ink-soft);
+    text-decoration:none;
+    border-bottom:1px solid var(--line);
+    padding-bottom:1px;
+  }
+  .page-nav a:hover{color:var(--ink);border-color:var(--ink-soft);}
+  .page-nav-back{font-weight:700;}
+  .page-nav-adjacent{display:flex;gap:16px;flex-wrap:wrap;margin-left:auto;}
+  .page-nav-empty{display:inline-block;}
+
+  /* header / scoreboard */
+  .masthead{
+    padding:38px 20px 0;
+    text-align:center;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.24em;
+    color:var(--ink-soft);
+    font-weight:700;
+  }
+  .wrap > .masthead h1{
+    font-size:26px;
+    font-weight:700;
+    margin:10px 0 26px;
+    line-height:1.6;
+  }
+
+  .scoreboard{
+    background:linear-gradient(180deg,#2a2019,#1b140f);
+    border-radius:6px;
+    padding:26px 18px 22px;
+    color:#f3ead9;
+    box-shadow:0 10px 30px -14px rgba(0,0,0,.5);
+  }
+  .score-meta{
+    font-size:11px;
+    letter-spacing:.14em;
+    color:#c9bda3;
+    margin-bottom:16px;
+  }
+  .score-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+  }
+  .club{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    width:120px;
+  }
+  .badge{
+    width:52px;height:52px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;font-weight:700;color:#fff;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.25),0 1px 4px rgba(0,0,0,.2);
+    flex-shrink:0;
+    overflow:hidden;
+    background:var(--other);
+  }
+  .badge img{width:100%;height:100%;object-fit:cover;display:block;}
+  .badge.mini{width:30px;height:30px;font-size:13px;}
+  .club-name{font-size:13px;font-weight:700;letter-spacing:.04em;}
+  .score-num{
+    font-size:44px;font-weight:700;
+    display:flex;align-items:center;gap:14px;
+  }
+  .score-dash{color:#8f8471;font-size:28px;}
+  .score-goal{font-size:11px;color:#c9bda3;margin-top:2px;}
+
+  /* summary card */
+  .summary{
+    margin-top:26px;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:24px 22px;
+    font-size:15px;
+  }
+  .summary h2{
+    font-size:15px;
+    margin:0 0 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .summary h2::before{
+    content:"";
+    width:14px;height:14px;
+    background:var(--nagoya);
+    display:inline-block;
+    transform:rotate(45deg);
+  }
+  .summary p{margin:0 0 10px;color:#3b352c;}
+  .summary p:last-child{margin-bottom:0;}
+  .summary .cite{font-size:12px;color:var(--ink-soft);margin-top:14px;}
+
+  /* section headers */
+  .section{margin-top:48px;}
+  .section-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .section-head .rule{flex:1;height:1px;background:var(--line);}
+  .section-title{
+    font-size:19px;
+    font-weight:700;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-sub{font-size:12px;color:var(--ink-soft);margin:-10px 0 20px;}
+
+  /* comment cards */
+  .comment{
+    display:flex;
+    gap:12px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .comment:last-child{border-bottom:none;}
+  .comment .who{
+    flex-shrink:0;
+    width:64px;
+    text-align:center;
+  }
+  .comment .who .tag{
+    display:block;
+    font-size:10px;
+    color:var(--ink-soft);
+    margin-top:4px;
+    letter-spacing:.02em;
+  }
+  .comment .body{flex:1;min-width:0;}
+  .comment .meta{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .comment .paraphrase{
+    font-size:14.5px;
+    color:#3b352c;
+    margin-bottom:6px;
+  }
+  .comment .quote{
+    font-size:15.5px;
+    color:var(--ink);
+  }
+  .comment .quote span.line{
+    display:inline;
+  }
+  .comment .quote span.line::before{content:"「";color:var(--ink-soft);}
+  .comment .quote span.line::after{content:"」";color:var(--ink-soft);}
+
+  .badge.nichan{background:linear-gradient(135deg,#6b5b8c,#3f3357);}
+
+  /* X post cards */
+  .xpost{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    display:flex;
+    gap:12px;
+  }
+  .xpost .avatar{
+    width:36px;height:36px;border-radius:50%;
+    background:linear-gradient(135deg,#f3934a,var(--shimizu-deep));
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:13px;font-weight:700;
+  }
+  .xpost .handle{font-size:13px;font-weight:700;}
+  .xpost .at{font-size:12px;color:var(--ink-soft);font-weight:400;margin-left:4px;}
+  .xpost .paraphrase{font-size:13.5px;color:#3b352c;margin-top:4px;}
+  .xpost .quote{font-size:14.5px;margin-top:4px;}
+
+  .footnote{
+    margin-top:20px;
+    background:var(--paper-2);
+    border-left:3px solid var(--nagoya-gold);
+    padding:14px 16px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    border-radius:0 4px 4px 0;
+  }
+
+  .source-note{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:60px;
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:480px){
+    .score-num{font-size:34px;}
+    .club{width:92px;}
+    .badge{width:44px;height:44px;font-size:18px;}
+    .comment{gap:9px;}
+    .comment .who{width:52px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!--PAGE-NAV-START-->
+  <div id="page-nav" class="page-nav">
+    <a class="page-nav-back" href="index.html">← 一覧に戻る</a>
+    <div class="page-nav-adjacent"><a class="page-nav-prev" href="2026091907.html">← 岡山 1-2 京都</a><a class="page-nav-next" href="2026091908.html">→ 横浜FM 2-0 水戸</a></div>
+  </div>
+  <!--PAGE-NAV-END-->
+
+  <div class="masthead">
+    <div class="eyebrow">MATCH REACTION FILE</div>
+    <h1>ＦＣ東京 1-0 名古屋グランパス<br>掲示板・Xの反応まとめ</h1>
+  </div>
+
+  <div class="scoreboard">
+    <div class="score-meta">2026.09.19 (SAT) 19:03 KICK OFF ／ 第8節 ／ ＭＵＦＧスタジアム ／ 観衆 51,557人</div>
+    <div class="score-row">
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/3c53baf0bada561c.png" alt="ＦＣ東京"></div>
+        
+        <div class="club-name">ＦＣ東京</div>
+      </div>
+      <div class="score-num">1<span class="score-dash">−</span>0</div>
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/fba44cc426482528.png" alt="名古屋グランパス"></div>
+        
+        <div class="club-name">名古屋グランパス</div>
+      </div>
+    </div>
+    <div class="score-goal">得点：俵積田 晃太（Ｆ）56&#39;　／　警告・退場：高 宇洋、佐藤 恵允、橋本 拳人（Ｆ）　中山 克広（名）</div>
+  </div>
+
+  <div class="summary">
+    <h2>まとめ</h2>
+    
+    <p>ミューザ級の一戦となったFC東京対名古屋グランパスは、後半56分の俵積田晃太のゴールが決勝点となりFC東京が1-0で勝利した。試合終盤にはFC東京の高宇洋が2枚目のイエローで退場するなど荒れた展開となったが、名古屋は数的優位を生かしきれず無得点に終わった。</p>
+    
+    <p>名古屋サポーターの間では、内容面での物足りなさを指摘する声が目立った。決定機を活かせないクロス頼みの攻撃や、得点感のない前線の噛み合わなさへの不満が多く見られ、特にエースストライカーの得点力不足を懸念する意見が相次いだ。一方で、相手が一人少なくなってからも守備が崩れずクリーンシートを守れた点を評価する声もあった。</p>
+    
+    <p>采配面についても厳しい意見が出ており、交代カードの使い方やベンチワークの遅さを疑問視するコメントが複数見られた。フロントの補強姿勢や、監督采配の固定化に対する批判的な意見も上がっており、今後のシーズンに向けた不安材料として語られている。</p>
+    
+    <p>一方で、下部組織出身の若手選手のプレー内容を評価し、トップチームとの比較で伸び代を指摘する声や、スタメンを入れ替えながらも勝ち点を積み上げていることをポジティブに捉える意見もあり、ファンの受け止め方は様々だった。</p>
+    
+    <div class="cite">出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿</div>
+  </div>
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="badge mini"><img src="assets/emblems/3c53baf0bada561c.png" alt=""></span>
+        
+        掲示板の反応：FC東京サポーター（対比として）</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">👤</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント27</div>
+        
+        <div class="quote"><span class="line">誰もおらんこと多いし</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="badge mini"><img src="assets/emblems/fba44cc426482528.png" alt=""></span>
+        
+        掲示板の反応：名古屋サポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fba44cc426482528.png" alt=""></div>
+        
+        <span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント2</div>
+        
+        <div class="quote"><span class="line">そろそろ無理じゃないっすかね</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fba44cc426482528.png" alt=""></div>
+        
+        <span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント8</div>
+        
+        <div class="quote"><span class="line">まともな外国人CFいればなぁという感じ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fba44cc426482528.png" alt=""></div>
+        
+        <span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント13</div>
+        
+        <div class="quote"><span class="line">5分もしないうちに最後の交代機会を</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fba44cc426482528.png" alt=""></div>
+        
+        <span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント14</div>
+        
+        <div class="quote"><span class="line">トッテナムみたいにヘボすぎる</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fba44cc426482528.png" alt=""></div>
+        
+        <span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント16</div>
+        
+        <div class="quote"><span class="line">山岸と和泉がブレーキすぎるんだわ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fba44cc426482528.png" alt=""></div>
+        
+        <span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント22</div>
+        
+        <div class="quote"><span class="line">一回入れ替わった方が良いレベル</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fba44cc426482528.png" alt=""></div>
+        
+        <span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント25</div>
+        
+        <div class="quote"><span class="line">いつも通りノーチャンスのクロスを上げ続けるサッカー</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fba44cc426482528.png" alt=""></div>
+        
+        <span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント30</div>
+        
+        <div class="quote"><span class="line">中盤の配置がスカスカになってカウンターを喰らう</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/fba44cc426482528.png" alt=""></div>
+        
+        <span class="tag">名古屋</span></div>
+      <div class="body">
+        <div class="meta">コメント31</div>
+        
+        <div class="quote"><span class="line">今季いまだゴールのない山岸を使い続ける</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+
+  
+
+  <div class="source-note">
+    出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿<br>
+    試合結果出典：Ｊリーグ公式サイト<br>
+    このページはスクレイピング結果をもとにClaude APIが自動生成したものです。要約・引用は著作権ルール(逐語引用は15語程度・1ソース1回まで)に沿って生成していますが、公開前の確認を推奨します。
+  </div>
+
+</div>
+<script type="application/json" id="match-meta">{"game_id": 2026091902, "section": "第8節", "kickoff_iso": "2026-09-19T10:03:00.000Z", "home_team": "ＦＣ東京", "away_team": "名古屋グランパス", "home_score": 1, "away_score": 0, "home_short": "FC東京", "away_short": "名古屋", "home_emblem_src": "assets/emblems/3c53baf0bada561c.png", "away_emblem_src": "assets/emblems/fba44cc426482528.png", "home_color": "#000A6E", "away_color": "#D80C18", "fan_side": "away"}</script>
+</body>
+</html>

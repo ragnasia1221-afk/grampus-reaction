@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>【反応まとめ】鹿島アントラーズ 2-0 ガンバ大阪</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>">
+<style>
+  :root{
+    --paper:#f6f2ea;
+    --paper-2:#efe9dc;
+    --ink:#241f19;
+    --ink-soft:#6b6153;
+    --nagoya:#8c1d20;
+    --nagoya-deep:#5c1214;
+    --nagoya-gold:#c8a24a;
+    --shimizu:#e8781f;
+    --shimizu-deep:#b95612;
+    --line:#ddd3bf;
+    --other:#4a5a63;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Meiryo UI","Meiryo","メイリオ","Hiragino Kaku Gothic ProN","Yu Gothic UI",sans-serif;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px;}
+
+  /* page nav (back-link / prev-next) */
+  .page-nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:16px 20px 0;
+    font-size:12.5px;
+    flex-wrap:wrap;
+  }
+  .page-nav a{
+    color:var(--ink-soft);
+    text-decoration:none;
+    border-bottom:1px solid var(--line);
+    padding-bottom:1px;
+  }
+  .page-nav a:hover{color:var(--ink);border-color:var(--ink-soft);}
+  .page-nav-back{font-weight:700;}
+  .page-nav-adjacent{display:flex;gap:16px;flex-wrap:wrap;margin-left:auto;}
+  .page-nav-empty{display:inline-block;}
+
+  /* header / scoreboard */
+  .masthead{
+    padding:38px 20px 0;
+    text-align:center;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.24em;
+    color:var(--ink-soft);
+    font-weight:700;
+  }
+  .wrap > .masthead h1{
+    font-size:26px;
+    font-weight:700;
+    margin:10px 0 26px;
+    line-height:1.6;
+  }
+
+  .scoreboard{
+    background:linear-gradient(180deg,#2a2019,#1b140f);
+    border-radius:6px;
+    padding:26px 18px 22px;
+    color:#f3ead9;
+    box-shadow:0 10px 30px -14px rgba(0,0,0,.5);
+  }
+  .score-meta{
+    font-size:11px;
+    letter-spacing:.14em;
+    color:#c9bda3;
+    margin-bottom:16px;
+  }
+  .score-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+  }
+  .club{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    width:120px;
+  }
+  .badge{
+    width:52px;height:52px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;font-weight:700;color:#fff;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,.25),0 1px 4px rgba(0,0,0,.2);
+    flex-shrink:0;
+    overflow:hidden;
+    background:var(--other);
+  }
+  .badge img{width:100%;height:100%;object-fit:cover;display:block;}
+  .badge.mini{width:30px;height:30px;font-size:13px;}
+  .club-name{font-size:13px;font-weight:700;letter-spacing:.04em;}
+  .score-num{
+    font-size:44px;font-weight:700;
+    display:flex;align-items:center;gap:14px;
+  }
+  .score-dash{color:#8f8471;font-size:28px;}
+  .score-goal{font-size:11px;color:#c9bda3;margin-top:2px;}
+
+  /* summary card */
+  .summary{
+    margin-top:26px;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:24px 22px;
+    font-size:15px;
+  }
+  .summary h2{
+    font-size:15px;
+    margin:0 0 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .summary h2::before{
+    content:"";
+    width:14px;height:14px;
+    background:var(--nagoya);
+    display:inline-block;
+    transform:rotate(45deg);
+  }
+  .summary p{margin:0 0 10px;color:#3b352c;}
+  .summary p:last-child{margin-bottom:0;}
+  .summary .cite{font-size:12px;color:var(--ink-soft);margin-top:14px;}
+
+  /* section headers */
+  .section{margin-top:48px;}
+  .section-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .section-head .rule{flex:1;height:1px;background:var(--line);}
+  .section-title{
+    font-size:19px;
+    font-weight:700;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-sub{font-size:12px;color:var(--ink-soft);margin:-10px 0 20px;}
+
+  /* comment cards */
+  .comment{
+    display:flex;
+    gap:12px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .comment:last-child{border-bottom:none;}
+  .comment .who{
+    flex-shrink:0;
+    width:64px;
+    text-align:center;
+  }
+  .comment .who .tag{
+    display:block;
+    font-size:10px;
+    color:var(--ink-soft);
+    margin-top:4px;
+    letter-spacing:.02em;
+  }
+  .comment .body{flex:1;min-width:0;}
+  .comment .meta{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .comment .paraphrase{
+    font-size:14.5px;
+    color:#3b352c;
+    margin-bottom:6px;
+  }
+  .comment .quote{
+    font-size:15.5px;
+    color:var(--ink);
+  }
+  .comment .quote span.line{
+    display:inline;
+  }
+  .comment .quote span.line::before{content:"「";color:var(--ink-soft);}
+  .comment .quote span.line::after{content:"」";color:var(--ink-soft);}
+
+  .badge.nichan{background:linear-gradient(135deg,#6b5b8c,#3f3357);}
+
+  /* X post cards */
+  .xpost{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    display:flex;
+    gap:12px;
+  }
+  .xpost .avatar{
+    width:36px;height:36px;border-radius:50%;
+    background:linear-gradient(135deg,#f3934a,var(--shimizu-deep));
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:13px;font-weight:700;
+  }
+  .xpost .handle{font-size:13px;font-weight:700;}
+  .xpost .at{font-size:12px;color:var(--ink-soft);font-weight:400;margin-left:4px;}
+  .xpost .paraphrase{font-size:13.5px;color:#3b352c;margin-top:4px;}
+  .xpost .quote{font-size:14.5px;margin-top:4px;}
+
+  .footnote{
+    margin-top:20px;
+    background:var(--paper-2);
+    border-left:3px solid var(--nagoya-gold);
+    padding:14px 16px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    border-radius:0 4px 4px 0;
+  }
+
+  .source-note{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-top:60px;
+    letter-spacing:.04em;
+  }
+
+  @media (max-width:480px){
+    .score-num{font-size:34px;}
+    .club{width:92px;}
+    .badge{width:44px;height:44px;font-size:18px;}
+    .comment{gap:9px;}
+    .comment .who{width:52px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!--PAGE-NAV-START-->
+  <div id="page-nav" class="page-nav">
+    <a class="page-nav-back" href="index.html">← 一覧に戻る</a>
+    <div class="page-nav-adjacent"><a class="page-nav-prev" href="2026100901.html">← 柏 4-2 神戸</a><span class="page-nav-empty"></span></div>
+  </div>
+  <!--PAGE-NAV-END-->
+
+  <div class="masthead">
+    <div class="eyebrow">MATCH REACTION FILE</div>
+    <h1>鹿島アントラーズ 2-0 ガンバ大阪<br>掲示板・Xの反応まとめ</h1>
+  </div>
+
+  <div class="scoreboard">
+    <div class="score-meta">2026.10.09 (FRI) 19:04 KICK OFF ／ 第9節 ／ メルカリスタジアム ／ 観衆 16,240人</div>
+    <div class="score-row">
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/c2ba54ea3c5af809.png" alt="鹿島アントラーズ"></div>
+        
+        <div class="club-name">鹿島アントラーズ</div>
+      </div>
+      <div class="score-num">2<span class="score-dash">−</span>0</div>
+      <div class="club">
+        
+        <div class="badge"><img src="assets/emblems/3d71333ba425d278.png" alt="ガンバ大阪"></div>
+        
+        <div class="club-name">ガンバ大阪</div>
+      </div>
+    </div>
+    <div class="score-goal">得点：レオ セアラ（鹿）45+7&#39;、鈴木 優磨（鹿）60&#39;　／　警告・退場：ウェルトン（ガ）　キム テヒョン、小川 諒也（鹿）</div>
+  </div>
+
+  <div class="summary">
+    <h2>まとめ</h2>
+    
+    <p>メルカリスタジアムで行われた第9節、鹿島アントラーズとガンバ大阪の一戦は、前半アディショナルタイムにレオ セアラが先制点を決め、後半には鈴木優磨が追加点を奪った鹿島が2-0で勝利した。鹿島はこれでリーグ戦の未勝利期間を止め、待望の白星をつかんだ。</p>
+    
+    <p>試合中盤には吉田湊海のゴールがVARにより取り消される場面もあり、鹿島側のファンからは釈然としない様子も見られたが、結果的にその直後に正式な得点が生まれる展開となった。試合を通して鹿島は際立って試合を支配していたわけではないが、効率よく得点を重ねて勝利をもぎ取った。</p>
+    
+    <p>ガンバ大阪については、今季ここまでの成績不振があらためて浮き彫りとなった。指揮官交代という大きな変化を経験しながらチーム状態の改善が見えず、サポーターの間では今後の進退問題について様々な憶測が飛び交っている。</p>
+    
+    <p>守備面では途中出場の選手が入った際に綻びが見える場面もあったが、鹿島は最終的にクリーンシートを達成。好調だった選手の存在や、チーム全体の強度の高さを評価する声が多く聞かれた一方、採点の基準や審判の判定を巡る議論も試合後の話題の一つとなった。</p>
+    
+    <div class="cite">出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿 ／ 5ch実況スレッド</div>
+  </div>
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">
+        <span class="badge mini"><img src="assets/emblems/c2ba54ea3c5af809.png" alt=""></span>
+        
+        掲示板の反応：鹿島サポーター</div>
+      <div class="rule"></div>
+    </div>
+
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/c2ba54ea3c5af809.png" alt=""></div>
+        
+        <span class="tag">鹿島</span></div>
+      <div class="body">
+        <div class="meta">コメント4</div>
+        
+        <div class="quote"><span class="line">勝ったあああぁぁぁぁ!!!</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/c2ba54ea3c5af809.png" alt=""></div>
+        
+        <span class="tag">鹿島</span></div>
+      <div class="body">
+        <div class="meta">コメント8</div>
+        
+        <div class="quote"><span class="line">久しぶりの勝利
+湊海凄く良かった
+三竿MVP</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/c2ba54ea3c5af809.png" alt=""></div>
+        
+        <span class="tag">鹿島</span></div>
+      <div class="body">
+        <div class="meta">コメント31</div>
+        
+        <div class="quote"><span class="line">今日は鈴木優磨！これから存分にケチャをドバしてもらわないと</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/c2ba54ea3c5af809.png" alt=""></div>
+        
+        <span class="tag">鹿島</span></div>
+      <div class="body">
+        <div class="meta">コメント61</div>
+        
+        <div class="quote"><span class="line">モドリッチ化が進んでる。</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/c2ba54ea3c5af809.png" alt=""></div>
+        
+        <span class="tag">鹿島</span></div>
+      <div class="body">
+        <div class="meta">コメント77</div>
+        
+        <div class="quote"><span class="line">あそこをなあなあにしたのはいただけないわ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini"><img src="assets/emblems/c2ba54ea3c5af809.png" alt=""></div>
+        
+        <span class="tag">鹿島</span></div>
+      <div class="body">
+        <div class="meta">コメント44</div>
+        
+        <div class="quote"><span class="line">こっちの守備との相性にバッチリはまっちゃったね</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">👤</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント16</div>
+        
+        <div class="quote"><span class="line">ガンバの失点シーン酷すぎる</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#583F99">熊</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント27</div>
+        
+        <div class="quote"><span class="line">明神さんいよいよヤバいか・・？</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:var(--other)">👤</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント62</div>
+        
+        <div class="quote"><span class="line">戦術云々以上に正直トップ向きの性格じゃないんだよな</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who">
+        <div class="badge mini" style="background:#003287">脚</div>
+        <span class="tag">他クラブ</span></div>
+      <div class="body">
+        <div class="meta">コメント84</div>
+        
+        <div class="quote"><span class="line">個々の選手たちもなんとかしたいというのがプレーから痛いほどわかる</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+
+  
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title"><span class="badge mini nichan">実</span>5ch実況スレッドの反応</div>
+      <div class="rule"></div>
+    </div>
+    <div class="section-sub">スレッド:「鹿島アントラーズ実況2026☆49」より</div>
+
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#17</div>
+        
+        <div class="quote"><span class="line">優磨「お前ら俺に言う事あるよね？」</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#42</div>
+        
+        <div class="quote"><span class="line">ナオーーーーーーーーーーナイスアシスト</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#95</div>
+        
+        <div class="quote"><span class="line">これはカードだろ
+首だぞ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#213</div>
+        
+        <div class="quote"><span class="line">ファールでしかもカードかよ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#401</div>
+        
+        <div class="quote"><span class="line">ブエノが後ろで守って三竿が前で攻撃参加している</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#438</div>
+        
+        <div class="quote"><span class="line">ブエノは守備で全く効いてないな</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#552</div>
+        
+        <div class="quote"><span class="line">ヴェルディ戦以来のクリーンシートおめ</span></div>
+        
+      </div>
+    </div>
+    
+    <div class="comment">
+      <div class="who"><div class="badge mini nichan">実</div><span class="tag">5ch</span></div>
+      <div class="body">
+        <div class="meta">#561</div>
+        
+        <div class="quote"><span class="line">優磨と三竿が良くなってたのは朗報</span></div>
+        
+      </div>
+    </div>
+    
+  </div>
+  
+
+  
+
+  <div class="source-note">
+    出典：ドメサカブログ コメント欄 ／ 同記事引用のX投稿 ／ 5ch実況スレッド「鹿島アントラーズ実況2026☆49」<br>
+    試合結果出典：Ｊリーグ公式サイト<br>
+    このページはスクレイピング結果をもとにClaude APIが自動生成したものです。要約・引用は著作権ルール(逐語引用は15語程度・1ソース1回まで)に沿って生成していますが、公開前の確認を推奨します。
+  </div>
+
+</div>
+<script type="application/json" id="match-meta">{"game_id": 2026100903, "section": "第9節", "kickoff_iso": "2026-10-09T10:04:00.000Z", "home_team": "鹿島アントラーズ", "away_team": "ガンバ大阪", "home_score": 2, "away_score": 0, "home_short": "鹿島", "away_short": "G大阪", "home_emblem_src": "assets/emblems/c2ba54ea3c5af809.png", "away_emblem_src": "assets/emblems/3d71333ba425d278.png", "home_color": "#B8193F", "away_color": "#003287", "fan_side": null}</script>
+</body>
+</html>
